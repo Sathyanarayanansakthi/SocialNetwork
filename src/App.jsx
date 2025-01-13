@@ -1,20 +1,21 @@
-//import React from 'react'
-import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-react'
+import { SignedIn, SignedOut} from '@clerk/clerk-react';
+import Landingpage from "./pages/Landingpage";
+import ProtectedPage from './pages/ProtectedPage';
 
-import Landingpage from "./pages/Landingpage"
 
 const App = () => {
   return (
     <>
       <SignedOut>
-        <SignInButton />
+        <Landingpage />
+
       </SignedOut>
+      
       <SignedIn>
-        <UserButton />
-        <Landingpage/>
+        <ProtectedPage />
       </SignedIn>
     </>
-  )
-}
+  );
+};
 
-export default App
+export default App;
