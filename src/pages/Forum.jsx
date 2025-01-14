@@ -14,7 +14,7 @@ const Forum = () => {
       <div className="flex justify-end mb-4">
         <button
           onClick={handleClick} // Trigger the handleClick function on button click
-          className="px-6 py-3 font-semibold text-white transition-all duration-300 bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none"
+          className="px-4 py-2  font-semibold text-white transition-all duration-300 bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none"
         >
           Ask Questions
         </button>

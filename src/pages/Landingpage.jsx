@@ -1,7 +1,6 @@
-//import React from 'react';
-import { FaUsers, FaShareAlt, FaUniversity, FaPaperPlane } from 'react-icons/fa';
-import { SignInButton } from '@clerk/clerk-react';
-import { motion } from 'framer-motion';
+import { FaUsers, FaShareAlt, FaUniversity, FaPaperPlane } from "react-icons/fa";
+import { SignInButton } from "@clerk/clerk-react";
+import { motion } from "framer-motion";
 
 const Landingpage = () => {
   return (
@@ -13,8 +12,10 @@ const Landingpage = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7 }}
       >
-        <h1 className="mb-4 text-5xl font-bold">Welcome to Our Social Network</h1>
-        <p className="mb-6 text-lg">
+        <h1 className="mb-4 text-3xl sm:text-4xl md:text-5xl font-bold">
+          Welcome to Our Social Network
+        </h1>
+        <p className="mb-6 text-base sm:text-lg">
           A platform for students, researchers, and professionals to collaborate, share knowledge, and connect.
         </p>
         <div className="flex items-center justify-center bg-gray-700 rounded-lg">
@@ -44,13 +45,13 @@ const Landingpage = () => {
             <div className={`mb-4 text-4xl ${feature.color}`}>
               {feature.icon}
             </div>
-            <h3 className="mb-2 text-xl font-semibold">{feature.title}</h3>
+            <h3 className="mb-2 text-lg sm:text-xl font-semibold">{feature.title}</h3>
             <p>{feature.description}</p>
           </motion.div>
         ))}
       </div>
 
-      {/* Image Section */}
+      {/* Image Section (Fixed, No Mouse Movement) */}
       <motion.div
         className="relative py-20"
         initial={{ opacity: 0 }}
@@ -58,9 +59,9 @@ const Landingpage = () => {
         transition={{ duration: 1 }}
       >
         <img
-          src="https://via.placeholder.com/1080x500.png?text=Placeholder+Image"
+          src="https://images.unsplash.com/photo-1573164574403-8b497c9b402d?crop=entropy&cs=tinysrgb&fit=max&ixid=MnwzNjUyOXwwfDF8c2VhY2h8MXx8c3R1ZGVudHxlbnwwfHx8fDE2NzYyNzY2Nzg&ixlib=rb-1.2.1&q=80&w=1080"
           alt="Students Collaborating"
-          className="object-cover w-full rounded-lg shadow-lg min-h-[500px]"
+          className="object-cover w-full rounded-lg shadow-lg min-h-[500px] sm:min-h-[300px]"
         />
         <div className="absolute inset-0 flex items-center justify-center text-4xl font-bold text-white bg-black rounded-lg bg-opacity-40">
           Innovation Starts Here
@@ -74,8 +75,8 @@ const Landingpage = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <p className="mb-2">© 2025 Social Network. All rights reserved.</p>
-        <p>
+        <p className="mb-2 text-sm sm:text-base">© 2025 Social Network. All rights reserved.</p>
+        <p className="text-sm sm:text-base">
           Connect with us on:
           <a href="#" className="ml-2 text-blue-400 hover:text-blue-500">Facebook</a> | 
           <a href="#" className="ml-2 text-blue-400 hover:text-blue-500">Twitter</a> | 

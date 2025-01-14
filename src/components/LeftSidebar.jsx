@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { BrowserRouter as Router, Link, Route, Routes } from "react-router-dom";
-import { FaHome, FaServicestack, FaPhone, FaBars, FaTimes, FaComment } from "react-icons/fa";
+import { FaHome, FaBars, FaTimes, FaComment } from "react-icons/fa";
+import { MdEvent } from "react-icons/md"; 
+import { GiPapers } from "react-icons/gi";
+import { FcCollaboration } from "react-icons/fc";
 import { UserButton } from "@clerk/clerk-react";
 import Forum from "../pages/Forum";
 
@@ -31,10 +34,12 @@ function LeftSidebar() {
                 <FaComment className="mr-4 text-xl" /> Forum
               </Link>
               <Link to="/services" className="flex items-center px-6 py-3 text-lg font-bold rounded-lg hover:bg-blue-600">
-                <FaServicestack className="mr-4 text-xl" /> Services
+                <MdEvent className="mr-4 text-xl" /> Event               </Link>
+              <Link to="/collabration" className="flex items-center px-6 py-3 text-lg font-bold rounded-lg hover:bg-blue-600">
+                <FcCollaboration   className="mr-4 text-xl" /> Collabration
               </Link>
-              <Link to="/contact" className="flex items-center px-6 py-3 text-lg font-bold rounded-lg hover:bg-blue-600">
-                <FaPhone className="mr-4 text-xl" /> Contact
+              <Link to="/paper" className="flex items-center px-6 py-3 text-lg font-bold rounded-lg hover:bg-blue-600">
+                <GiPapers  className="mr-4 text-xl" /> Papers
               </Link>
 
             </nav>
@@ -55,6 +60,7 @@ function LeftSidebar() {
             <Route path="/" element={<div className="text-2xl font-bold">Home Page</div>} />
             <Route path="/forum" element={<Forum />} />
             <Route path="/contact" element={<div className="text-2xl font-bold">Contact Page</div>} />
+            <Route path="/collabration" element={<div className="text-2xl font-bold">Collabration page</div>}/>
           </Routes>
         </div>
       </div>
