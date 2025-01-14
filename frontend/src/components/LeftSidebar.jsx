@@ -1,27 +1,33 @@
 import { useState } from "react";
 import { BrowserRouter as Router, Link, Route, Routes } from "react-router-dom";
 import { FaHome, FaBars, FaTimes, FaComment } from "react-icons/fa";
-import { MdEvent } from "react-icons/md"; 
+import { MdEvent } from "react-icons/md";
+import { IoMdPlanet } from "react-icons/io";
 import { GiPapers } from "react-icons/gi";
 import { FcCollaboration } from "react-icons/fc";
 import { UserButton } from "@clerk/clerk-react";
 import Forum from "../pages/Forum";
+import CollabPage from "../pages/CollabPage";
+import Event from "../pages/Event";
 
 function LeftSidebar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <Router>
-      <div className="flex h-screen">
-        {/* Sidebar */}
+      <div className="flex h-screen overflow-hidden">
+        {/* Sticky Sidebar */}
         <div
           className={`fixed inset-y-0 left-0 w-64 bg-gradient-to-b from-gray-900 to-gray-800 text-gray-200 transform ${
             isOpen ? "translate-x-0" : "-translate-x-full"
-          } md:relative md:translate-x-0 transition-transform duration-300 ease-in-out shadow-lg rounded-r-lg flex flex-col justify-between`}
+          } md:relative md:translate-x-0 transition-transform duration-300 ease-in-out shadow-lg rounded-r-lg flex flex-col justify-between overflow-y-auto sticky top-0`}
         >
           <div>
             <div className="flex items-center justify-between p-4 text-lg font-bold border-b border-gray-600 rounded-t-lg">
-              <span>My Sidebar</span>
+              <span className="flex items-center">
+                <IoMdPlanet className="mr-2" />
+                Social Network
+              </span>
               <button className="text-gray-200 md:hidden" onClick={() => setIsOpen(false)}>
                 <FaTimes size={20} />
               </button>
@@ -33,15 +39,15 @@ function LeftSidebar() {
               <Link to="/forum" className="flex items-center px-6 py-3 text-lg font-bold rounded-lg hover:bg-blue-600">
                 <FaComment className="mr-4 text-xl" /> Forum
               </Link>
-              <Link to="/services" className="flex items-center px-6 py-3 text-lg font-bold rounded-lg hover:bg-blue-600">
-                <MdEvent className="mr-4 text-xl" /> Event               </Link>
+              <Link to="/event" className="flex items-center px-6 py-3 text-lg font-bold rounded-lg hover:bg-blue-600">
+                <MdEvent className="mr-4 text-xl" /> Event
+              </Link>
               <Link to="/collabration" className="flex items-center px-6 py-3 text-lg font-bold rounded-lg hover:bg-blue-600">
-                <FcCollaboration   className="mr-4 text-xl" /> Collabration
+                <FcCollaboration className="mr-4 text-xl" /> Collaboration
               </Link>
               <Link to="/paper" className="flex items-center px-6 py-3 text-lg font-bold rounded-lg hover:bg-blue-600">
-                <GiPapers  className="mr-4 text-xl" /> Papers
+                <GiPapers className="mr-4 text-xl" /> Papers
               </Link>
-
             </nav>
           </div>
 
@@ -51,7 +57,7 @@ function LeftSidebar() {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 p-4 text-slate-400">
+        <div className="flex-1 p-4 ml-64 overflow-auto text-slate-400 md:ml-0">
           <button className="p-2 mb-4 text-white bg-blue-600 rounded md:hidden" onClick={() => setIsOpen(!isOpen)}>
             <FaBars size={20} />
           </button>
@@ -59,8 +65,8 @@ function LeftSidebar() {
           <Routes>
             <Route path="/" element={<div className="text-2xl font-bold">Home Page</div>} />
             <Route path="/forum" element={<Forum />} />
-            <Route path="/contact" element={<div className="text-2xl font-bold">Contact Page</div>} />
-            <Route path="/collabration" element={<div className="text-2xl font-bold">Collabration page</div>}/>
+            <Route path="/event" element={<Event />} />
+            <Route path="/collabration" element={<CollabPage />} />
           </Routes>
         </div>
       </div>

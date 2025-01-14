@@ -1,0 +1,34 @@
+{
+  "hash": "70b35bef",
+  "configHash": "f67747d9",
+  "lockfileHash": "97417eef",
+  "browserHash": "5295f83a",
+  "optimized": {
+    "@clerk/clerk-react": {
+      "src": "../../node_modules/@clerk/clerk-react/dist/index.mjs",
+      "file": "@clerk_clerk-react.js",
+      "fileHash": "2ffa0d5d",
+      "needsInterop": false
+    },
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "64b64cba",
+      "needsInterop": true
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "c0a825c3",
+      "needsInterop": true
+    }
+  },
+  "chunks": {
+    "chunk-LV7LEDEA": {
+      "file": "chunk-LV7LEDEA.js"
+    },
+    "chunk-JRE55LYH": {
+      "file": "chunk-JRE55LYH.js"
+    }
+  }
+}
