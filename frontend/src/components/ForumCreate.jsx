@@ -1,36 +1,60 @@
 import { useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 
-const FormCreate = () => {
+const FormCreate = ({ setShowForm }) => {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [tags, setTags] = useState("");
-  const [errors, setErrors] = useState({}); // State to store error messages
+  const [errors, setErrors] = useState({});
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Validation checks
     let formErrors = {};
-    if (!title) formErrors.title = "Title is required";
-    if (!body) formErrors.body = "Body is required";
-    if (!tags) formErrors.tags = "Tags are required";
 
-    // If there are validation errors, set them and prevent form submission
+    // Validation for Title
+    if (!title.trim()) {
+      formErrors.title = "Title is required and cannot be empty";
+    }
+
+    // Validation for Body
+    if (!body.trim()) {
+      formErrors.body = "Body is required and cannot be empty";
+    }
+
+    // Validation for Tags (check if tags are separated by commas)
+    if (!tags.trim()) {
+      formErrors.tags = "Tags are required and cannot be empty";
+    } else if (!/^([a-zA-Z0-9]+)(, *[a-zA-Z0-9]+)*$/.test(tags.trim())) {
+      formErrors.tags = "Tags must be alphanumeric and separated by commas";
+    }
+
+    // If there are any errors, set them and stop submission
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
       return;
     }
 
-    // If no errors, submit the form
+    // If all fields are valid
     console.log("Question Submitted: ", { title, body, tags });
-
-    // Reset errors after submission
     setErrors({});
   };
 
+  // Function to close the form
+  const handleClose = () => {
+    setShowForm(false); // This will hide the form in the parent component (Forum)
+  };
+
   return (
-    <div className="max-w-4xl p-4 mx-auto">
+    <div className="relative max-w-4xl p-4 mx-auto bg-white rounded-md shadow-md">
+      {/* Close Button */}
+      <button
+        onClick={handleClose}
+        className="absolute px-3 py-1 text-red-500 bg-transparent rounded-full top-2 right-2 hover:text-white hover:bg-red-500 focus:outline-none"
+      >
+        ✕
+      </button>
+
       <h1 className="mb-6 text-3xl font-semibold">Ask a Question</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Title Input */}
@@ -39,6 +63,7 @@ const FormCreate = () => {
             Title
           </label>
           <input
+            placeholder="Give a simple question"
             type="text"
             id="title"
             className="w-full px-4 py-2 mt-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
@@ -46,7 +71,7 @@ const FormCreate = () => {
             onChange={(e) => setTitle(e.target.value)}
             required
           />
-          {errors.title && <p className="text-red-500 text-sm">{errors.title}</p>}
+          {errors.title && <p className="text-sm text-red-500">{errors.title}</p>}
         </div>
 
         {/* TinyMCE Editor for Body */}
@@ -70,7 +95,7 @@ const FormCreate = () => {
                 "undo redo | bold italic underline | link image media | bullist numlist | removeformat",
             }}
           />
-          {errors.body && <p className="text-red-500 text-sm">{errors.body}</p>}
+          {errors.body && <p className="text-sm text-red-500">{errors.body}</p>}
         </div>
 
         {/* Tags Input */}
@@ -81,12 +106,12 @@ const FormCreate = () => {
           <input
             type="text"
             id="tags"
-            className="w-full px-4 py-2 mt-2 border border- rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            className="w-full px-4 py-2 mt-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
             value={tags}
             onChange={(e) => setTags(e.target.value)}
             required
           />
-          {errors.tags && <p className="text-red-500 text-sm">{errors.tags}</p>}
+          {errors.tags && <p className="text-sm text-red-500">{errors.tags}</p>}
         </div>
 
         {/* Submit Button */}

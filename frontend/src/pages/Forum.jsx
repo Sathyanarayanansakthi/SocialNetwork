@@ -4,24 +4,25 @@ import FormCreate from "../components/ForumCreate";
 const Forum = () => {
   const [showForm, setShowForm] = useState(false);
 
+  // Function to show the form when the button is clicked
   const handleClick = () => {
-    setShowForm(true); // Set the state to show the form when button is clicked
+    setShowForm(true);
   };
 
   return (
     <div>
-      {/* Button aligned to the right */}
+      {/* Button to trigger form display */}
       <div className="flex justify-end mb-4">
         <button
-          onClick={handleClick} // Trigger the handleClick function on button click
-          className="px-4 py-2  font-semibold text-white transition-all duration-300 bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none"
+          onClick={handleClick} // Show the form when button is clicked
+          className="px-4 py-2 font-semibold text-white transition-all duration-300 bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none"
         >
           Ask Questions
         </button>
       </div>
 
-      {/* Conditional rendering of FormCreate component */}
-      {showForm && <FormCreate />}
+      {/* Conditionally render FormCreate component */}
+      {showForm && <FormCreate setShowForm={setShowForm} />}
     </div>
   );
 };

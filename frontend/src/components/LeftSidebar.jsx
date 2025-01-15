@@ -1,6 +1,20 @@
 import { useState } from "react";
 import { BrowserRouter as Router, Link, Route, Routes } from "react-router-dom";
-import { FaHome, FaBars, FaTimes, FaComment } from "react-icons/fa";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Drawer,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  IconButton,
+  Box,
+  CssBaseline,
+  Divider,
+} from "@mui/material";
+import { FaHome, FaBars, FaComment } from "react-icons/fa";
 import { MdEvent } from "react-icons/md";
 import { IoMdPlanet } from "react-icons/io";
 import { GiPapers } from "react-icons/gi";
@@ -10,66 +24,135 @@ import Forum from "../pages/Forum";
 import CollabPage from "../pages/CollabPage";
 import Event from "../pages/Event";
 
+const drawerWidth = 240;
+
 function LeftSidebar() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const menuItems = [
+    { text: "Home", icon: <FaHome />, path: "/" },
+    { text: "Forum", icon: <FaComment />, path: "/forum" },
+    { text: "Event", icon: <MdEvent />, path: "/event" },
+    { text: "Collaboration", icon: <FcCollaboration />, path: "/collabration" },
+    { text: "Papers", icon: <GiPapers />, path: "/paper" },
+  ];
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
+  const drawer = (
+    <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+      <Toolbar className="flex items-center justify-center">
+        <Typography variant="h6" className="flex items-center">
+          <IoMdPlanet className="mr-2" />
+          Social Network
+        </Typography>
+      </Toolbar>
+      <Divider />
+      <List>
+        {menuItems.map((item, index) => (
+          <Link
+            key={index}
+            to={item.path}
+            className="flex items-center hover:bg-blue-600 p-2 rounded"
+          >
+            <ListItem button>
+              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemText primary={item.text} />
+            </ListItem>
+          </Link>
+        ))}
+      </List>
+
+      {/* Profile Button at Bottom Left */}
+      <Box sx={{ marginTop: "auto", padding: 2 }}>
+        <UserButton />
+      </Box>
+    </Box>
+  );
 
   return (
     <Router>
-      <div className="flex h-screen overflow-hidden">
-        {/* Sticky Sidebar */}
-        <div
-          className={`fixed inset-y-0 left-0 w-64 bg-gradient-to-b from-gray-900 to-gray-800 text-gray-200 transform ${
-            isOpen ? "translate-x-0" : "-translate-x-full"
-          } md:relative md:translate-x-0 transition-transform duration-300 ease-in-out shadow-lg rounded-r-lg flex flex-col justify-between overflow-y-auto sticky top-0`}
+      <Box sx={{ display: "flex" }}>
+        <CssBaseline />
+
+        {/* AppBar for Header */}
+        <AppBar
+          position="fixed"
+          className="bg-gradient-to-r from-gray-800 to-gray-900 md:ml-64"
+          sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
         >
-          <div>
-            <div className="flex items-center justify-between p-4 text-lg font-bold border-b border-gray-600 rounded-t-lg">
-              <span className="flex items-center">
-                <IoMdPlanet className="mr-2" />
-                Social Network
-              </span>
-              <button className="text-gray-200 md:hidden" onClick={() => setIsOpen(false)}>
-                <FaTimes size={20} />
-              </button>
-            </div>
-            <nav className="mt-4 space-y-4">
-              <Link to="/" className="flex items-center px-6 py-3 text-lg font-bold rounded-lg hover:bg-blue-600">
-                <FaHome className="mr-4 text-xl" /> Home
-              </Link>
-              <Link to="/forum" className="flex items-center px-6 py-3 text-lg font-bold rounded-lg hover:bg-blue-600">
-                <FaComment className="mr-4 text-xl" /> Forum
-              </Link>
-              <Link to="/event" className="flex items-center px-6 py-3 text-lg font-bold rounded-lg hover:bg-blue-600">
-                <MdEvent className="mr-4 text-xl" /> Event
-              </Link>
-              <Link to="/collabration" className="flex items-center px-6 py-3 text-lg font-bold rounded-lg hover:bg-blue-600">
-                <FcCollaboration className="mr-4 text-xl" /> Collaboration
-              </Link>
-              <Link to="/paper" className="flex items-center px-6 py-3 text-lg font-bold rounded-lg hover:bg-blue-600">
-                <GiPapers className="mr-4 text-xl" /> Papers
-              </Link>
-            </nav>
-          </div>
+          <Toolbar>
+            <IconButton
+              edge="start"
+              color="inherit"
+              onClick={handleDrawerToggle}
+              className="md:hidden"
+            >
+              <FaBars />
+            </IconButton>
+            <Typography variant="h6" noWrap>
+              Social Network
+            </Typography>
+          </Toolbar>
+        </AppBar>
 
-          <div className="p-6">
-            <UserButton />
-          </div>
-        </div>
+        {/* Sidebar for desktop */}
+        <Drawer
+          variant="permanent"
+          className="hidden md:block"
+          sx={{
+            width: drawerWidth,
+            flexShrink: 0,
+            [`& .MuiDrawer-paper`]: {
+              width: drawerWidth,
+              boxSizing: "border-box",
+              position: "sticky",
+              top: 0,
+            },
+          }}
+        >
+          {drawer}
+        </Drawer>
 
-        {/* Main Content */}
-        <div className="flex-1 p-4 ml-64 overflow-auto text-slate-400 md:ml-0">
-          <button className="p-2 mb-4 text-white bg-blue-600 rounded md:hidden" onClick={() => setIsOpen(!isOpen)}>
-            <FaBars size={20} />
-          </button>
+        {/* Responsive Drawer for mobile */}
+        <Drawer
+          variant="temporary"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          className="md:hidden"
+          ModalProps={{
+            keepMounted: true,
+          }}
+          sx={{
+            [`& .MuiDrawer-paper`]: {
+              width: drawerWidth,
+              boxSizing: "border-box",
+            },
+          }}
+        >
+          {drawer}
+        </Drawer>
 
+        {/* Main Content with adjusted space between sidebar */}
+        <Box
+          component="main"
+          className="flex-1 p-4"
+          sx={{
+            ml: { md: `${drawerWidth + 20}px` }, // Increased space (20px) between sidebar and content
+            maxWidth: "100%",
+            marginTop: "64px", // Adjust the content margin for AppBar height
+          }}
+        >
           <Routes>
             <Route path="/" element={<div className="text-2xl font-bold">Home Page</div>} />
             <Route path="/forum" element={<Forum />} />
             <Route path="/event" element={<Event />} />
             <Route path="/collabration" element={<CollabPage />} />
           </Routes>
-        </div>
-      </div>
+        </Box>
+      </Box>
     </Router>
   );
 }
