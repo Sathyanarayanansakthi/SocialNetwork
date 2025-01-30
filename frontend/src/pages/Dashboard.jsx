@@ -8,7 +8,7 @@ const Dashboard = () => {
       <Sidebar />
 
       {/* Main Content Area */}
-      <main className="flex-1 min-h-screen p-6 bg-gray-100">
+      <main className="flex-1 min-h-screen p-6 bg-gray-100" >
         <h1 className="mb-4 text-4xl font-semibold text-gray-800">
           Welcome to Your Dashboard!
         </h1>

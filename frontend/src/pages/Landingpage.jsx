@@ -31,7 +31,7 @@ const LandingPage = () => {
 
       {/* Tech Stack Used Section */}
       <div className="py-20 bg-gray-800">
-        <h2 className="mb-10 text-3xl font-bold text-center text-white">Build On </h2>
+        <h2 className="mb-10 text-2xl font-bold text-center text-white">Developed using Modern and powerfull Library and Framework</h2>
         <div className="flex flex-wrap justify-center gap-8 px-6 text-center text-white">
           {[
             { icon: <SiVite />, name: "React JS", color: "text-blue-500" },
@@ -59,6 +59,7 @@ const LandingPage = () => {
           ))}
         </div>
       </div>
+
 
       {/* Features Section */}
       <div className="grid grid-cols-1 gap-12 px-6 py-20 text-center text-white md:grid-cols-2 lg:grid-cols-4">

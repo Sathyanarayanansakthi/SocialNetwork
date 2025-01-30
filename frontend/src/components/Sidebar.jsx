@@ -63,7 +63,7 @@ function Sidebar() {
             <ListItemText primary="Event" sx={{ fontSize: '16px', fontWeight: 500 }} />
           </ListItem>
            {/* Settings */}
-          <ListItem button onClick={() => navigate('/settings')}>
+          <ListItem button onClick={() => navigate('/forum')}>
             <ListItemIcon>
               <FaCogs className="text-xl text-white" />
             </ListItemIcon>

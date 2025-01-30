@@ -1,5 +1,5 @@
 import { AppBar, Button, Toolbar, Typography } from "@mui/material";
-import { Link } from "react-router-dom"; // Import Link
+import { Link } from "react-router-dom"; 
 
 const BlogNav = () => {
   return (
@@ -11,7 +11,7 @@ const BlogNav = () => {
         {/* Wrap the button in Link to navigate to the blog creation route */}
         <Button
           component={Link}
-          to="/create"  // Correct route to navigate to BlogForm
+          to="/create"  
           sx={{
             backgroundColor: "#42a5f5",
             color: "white",
