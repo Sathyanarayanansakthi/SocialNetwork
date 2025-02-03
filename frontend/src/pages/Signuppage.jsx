@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { Google as GoogleIcon, GitHub as GitHubIcon } from '@mui/icons-material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { Button, TextField, Typography, Container, Box, Stack, Alert } from '@mui/material';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function SignupPage() {
   const [username, setUsername] = useState('');
@@ -13,15 +16,20 @@ function SignupPage() {
   const registerUser = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.post('http://localhost:3000/api/auth/signUp', {
+      const { data } = await axios.post('http://localhost:5000/api/auth/signUp', {
         username,
         email,
         password,
       });
       console.log('User registered successfully:', data);
-      navigate('/dashboard'); 
+      toast.success('Registration successful! Redirecting...');
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 2000);
     } catch (err) {
-      setErrorMessage(err.response?.data?.error || 'Registration failed.');
+      const errorMessage = err.response?.data?.error || 'Registration failed.';
+      setErrorMessage(errorMessage);
+      toast.error(errorMessage);
       console.error('Registration failed:', err);
     }
   };
@@ -35,78 +43,87 @@ function SignupPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full p-6 bg-white rounded-lg shadow-lg sm:w-96 md:w-80 lg:w-96">
-        <h2 className="mb-4 text-3xl font-semibold text-center">Create an Account</h2>
+    <Container maxWidth="xs" sx={{ mt: 8, p: 4, bgcolor: 'white', borderRadius: 2, boxShadow: 3 }}>
+      <Typography variant="h4" component="h1" textAlign="center" gutterBottom>
+        Create an Account
+      </Typography>
 
-        {errorMessage && <p className="mb-4 text-center text-red-500">{errorMessage}</p>}
+      {errorMessage && <Alert severity="error" sx={{ mb: 2 }}>{errorMessage}</Alert>}
 
-        <form onSubmit={registerUser}>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Username</label>
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="w-full p-3 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-3 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              required
-            />
-          </div>
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700">Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-3 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              required
-            />
-          </div>
-          <button
+      <Box component="form" onSubmit={registerUser} noValidate sx={{ mt: 2 }}>
+        <Stack spacing={2}>
+          <TextField
+            label="Username"
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            fullWidth required
+          />
+          <TextField
+            label="Email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            fullWidth required
+          />
+          <TextField
+            label="Password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            fullWidth required
+          />
+          <Button
             type="submit"
-            className="w-full p-3 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none"
+            variant="contained"
+            color="primary"
+            fullWidth
+            sx={{ mt: 2 }}
           >
             Sign Up
-          </button>
-        </form>
+          </Button>
+        </Stack>
+      </Box>
 
-        <button
-          onClick={handleGoogleSignup}
-          className="w-full p-3 mt-4 text-white bg-red-500 rounded-md hover:bg-red-600 focus:outline-none" >
-          <div className="flex items-center justify-center space-x-2">
-            <GoogleIcon />
-            <span>Sign Up with Google</span>
-          </div>
-        </button>
+      <Button
+        variant="contained"
+        startIcon={<GoogleIcon />}
+        fullWidth
+        sx={{ mt: 2, bgcolor: 'red', color: 'white', '&:hover': { bgcolor: 'darkred' } }}
+        onClick={handleGoogleSignup}
+      >
+        Sign Up with Google
+      </Button>
 
-        <button
-          onClick={handleGithubSignup}
-          className="w-full p-3 mt-4 text-white bg-gray-800 rounded-md hover:bg-gray-900 focus:outline-none"
-        >
-          <div className="flex items-center justify-center space-x-2">
-            <GitHubIcon />
-            <span>Sign Up with GitHub</span>
-          </div>
-        </button>
+      <Button
+        variant="contained"
+        startIcon={<GitHubIcon />}
+        fullWidth
+        sx={{ mt: 2, bgcolor: 'black', color: 'white', '&:hover': { bgcolor: 'gray' } }}
+        onClick={handleGithubSignup}
+      >
+        Sign Up with GitHub
+      </Button>
 
-        <p className="mt-4 text-sm text-center">
-          Already have an account?{' '}
-          <a href="/signin" className="text-blue-500 hover:underline">
-            Sign In
-          </a>
-        </p>
-      </div>
-    </div>
+      <Typography variant="body2" textAlign="center" sx={{ mt: 2 }}>
+        Already have an account?{' '}
+        <Button color="primary" onClick={() => navigate('/signin')}>
+          Sign In
+        </Button>
+      </Typography>
+
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+    </Container>
   );
 }
 

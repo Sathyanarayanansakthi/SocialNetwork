@@ -1,5 +1,5 @@
-import { FaUsers, FaShareAlt, FaUniversity, FaPaperPlane, FaNodeJs, FaGithub,  FaGoogle, FaJs, FaServer } from "react-icons/fa";
-import { SiVite, SiPassport, SiMongodb, SiMui } from "react-icons/si";
+import { FaUsers, FaShareAlt, FaUniversity, FaPaperPlane, FaNodeJs, FaGithub, FaGoogle, FaJs, FaServer } from "react-icons/fa";
+import { SiVite, SiPassport, SiMongodb, SiMui } from "react-icons/si"; // Added SiQuill for Quill logo
 import { RiTailwindCssFill } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -31,7 +31,9 @@ const LandingPage = () => {
 
       {/* Tech Stack Used Section */}
       <div className="py-20 bg-gray-800">
-        <h2 className="mb-10 text-2xl font-bold text-center text-white">Developed using Modern and powerfull Library and Framework</h2>
+        <h2 className="mb-10 text-2xl font-bold text-center text-white">
+          Developed using Modern and powerful Library and Framework
+        </h2>
         <div className="flex flex-wrap justify-center gap-8 px-6 text-center text-white">
           {[
             { icon: <SiVite />, name: "React JS", color: "text-blue-500" },
@@ -45,6 +47,7 @@ const LandingPage = () => {
             { icon: <FaServer />, name: "Express", color: "text-gray-500" },
             { icon: <SiPassport />, name: "Passport JS", color: "text-blue-600" },
             { icon: <FaServer />, name: "JWT", color: "text-purple-500" },
+            // { icon: <SiQuill />, name: "Quill Editor", color: "text-red-500" }, // Added Quill
           ].map((tech, index) => (
             <motion.div
               key={index}
@@ -59,7 +62,6 @@ const LandingPage = () => {
           ))}
         </div>
       </div>
-
 
       {/* Features Section */}
       <div className="grid grid-cols-1 gap-12 px-6 py-20 text-center text-white md:grid-cols-2 lg:grid-cols-4">
