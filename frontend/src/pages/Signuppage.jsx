@@ -16,13 +16,14 @@ function SignupPage() {
   const registerUser = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.post('http://localhost:5000/api/auth/signUp', {
+      const { data } = await axios.post('http://localhost:5000/api/auth/signUp', { //endpoint of the signup added
         username,
         email,
         password,
       });
+
       console.log('User registered successfully:', data);
-      toast.success('Registration successful! Redirecting...');
+      toast.success('Registration successful! Redirecting...');//toster message
       setTimeout(() => {
         navigate('/dashboard');
       }, 2000);
@@ -34,17 +35,20 @@ function SignupPage() {
     }
   };
 
+
+  // Google Auth
   const handleGoogleSignup = () => {
     console.log('Google signup clicked');
   };
 
+  // Github Auth
   const handleGithubSignup = () => {
     console.log('GitHub signup clicked');
   };
 
   return (
     <Container maxWidth="xs" sx={{ mt: 8, p: 4, bgcolor: 'white', borderRadius: 2, boxShadow: 3 }}>
-      <Typography variant="h4" component="h1" textAlign="center" gutterBottom>
+      <Typography variant="h5" component="h1" textAlign="center" gutterBottom>
         Create an Account
       </Typography>
 

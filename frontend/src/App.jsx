@@ -7,6 +7,9 @@ import Blog from './pages/Blog';
 import BlogForm from './components/Blog/BlogForm';
 import Forum from './pages/Forum';
 import ForumCreation from './components/Forum/ForumCreation';
+import Collab from './pages/Collab';
+import Collabform from './components/Collab/Collabform';
+import Event from './pages/Event'
 
 function App() {
   return (
@@ -21,6 +24,9 @@ function App() {
           <Route path="/blog" element={<Blog />} />
           <Route path="/create" element={<BlogForm />} />
           <Route path="/forumcreation" element={<ForumCreation />} />
+         <Route path='collab' element={<Collab />} />
+         <Route path="collabForm" element={<Collabform />} />
+         <Route path='/event' element={<Event />}/>
         </Routes>
       </div>
     </Router>

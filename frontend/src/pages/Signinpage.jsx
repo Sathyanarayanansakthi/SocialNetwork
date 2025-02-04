@@ -20,7 +20,8 @@ function SigninPage() {
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/signin', {
+      // eslint-disable-next-line no-unused-vars
+      const response = await axios.post('http://localhost:5000/api/auth/signin', {  //adding end point of the sigin
         email,
         password,
       });
@@ -36,7 +37,7 @@ function SigninPage() {
   return (
     <Container maxWidth="xs" sx={{ mt: 8, p: 4, bgcolor: 'white', borderRadius: 2, boxShadow: 3 }}>
       <Toaster position="top-right" />
-      <Typography variant="h4" component="h1" textAlign="center" gutterBottom>
+      <Typography variant="h5" component="h1" textAlign="center" gutterBottom>
         Sign In
       </Typography>
 
@@ -84,7 +85,7 @@ function SigninPage() {
       </Stack>
 
       <Typography variant="body2" textAlign="center" sx={{ mt: 2 }}>
-        Don't have an account?{' '}
+        Don&lsquo;t have an account?{' '}
         <Button color="primary" onClick={() => navigate('/signup')}>
           Create an account
         </Button>

@@ -1,12 +1,13 @@
 import { Container, Typography, Box, TextField, Button, IconButton, Avatar, CircularProgress } from "@mui/material";
 import { Link } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import CloseIcon from "@mui/icons-material/Close";  // Import Close icon
 import { useState } from "react";
 
 const BlogForm = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [image, setImage] = useState(null);  // State for storing the uploaded image
+  const [image, setImage] = useState(null); // State for storing the uploaded image
   const [isUploading, setIsUploading] = useState(false); // State to track the upload status
 
   const handleTitleChange = (e) => setTitle(e.target.value);
@@ -37,6 +38,13 @@ const BlogForm = () => {
     setImage(null);
   };
 
+  // Close button logic (for example, navigating back to the blog list page)
+  const handleCloseForm = () => {
+    // You can implement closing behavior here, such as redirecting
+    // or just clearing the form (optional).
+    console.log("Form closed");
+  };
+
   return (
     <Container
       sx={{
@@ -44,47 +52,80 @@ const BlogForm = () => {
         justifyContent: "center",
         alignItems: "center",
         minHeight: "100vh",
+        backgroundColor: "#f4f6f8",  // Subtle background color for the page
       }}
     >
       <Box
         component="form"
         onSubmit={handleSubmit} // Handle form submission
         sx={{
-          backgroundColor: "rgba(200, 355, 255, 0.1)",
-          backdropFilter: "blur(10px)",
+          backgroundColor: "white",
           borderRadius: "16px",
           boxShadow: "0px 4px 30px rgba(0, 0, 0, 0.1)",
           padding: "32px",
           width: "100%",
-          maxWidth: "500px",
+          maxWidth: "600px",
           position: "relative",
+          border: "1px solid #E0E0E0",
         }}
       >
+        {/* Close button */}
+        <IconButton
+          onClick={handleCloseForm} // Implement the close behavior
+          sx={{
+            position: "absolute",
+            top: 16,
+            right: 16,
+            color: "#f44336",
+            fontSize: "1.5rem",
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
         <IconButton
           component={Link}
           to="/blog" // Navigate back to the Blog page
           sx={{
             position: "absolute",
-            top: 8,
-            left: 8,
-            color: "#f44336",
+            top: 16,
+            left: 16,
+            color: "#3f51b5",
+            fontSize: "1.5rem",
           }}
         >
           <ArrowBackIcon />
         </IconButton>
 
-        <Typography variant="h5" textAlign="center" mb={3}>
+        <Typography
+          variant="h4"
+          textAlign="center"
+          mb={4}
+          sx={{ fontWeight: 600, color: "#2D3A56" }}
+        >
           Create a New Blog
         </Typography>
-        
+
         <TextField
-          label="Title"
+          label="Blog Title"
           type="text"
           fullWidth
           variant="outlined"
           value={title}
           onChange={handleTitleChange}
-          sx={{ marginBottom: "16px" }}
+          sx={{
+            marginBottom: "16px",
+            bgcolor: "#f7f7f7",
+            borderRadius: "8px",
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "#E0E0E0",
+              },
+              "&:hover fieldset": {
+                borderColor: "#3f51b5",
+              },
+            },
+          }}
         />
 
         <TextField
@@ -92,13 +133,25 @@ const BlogForm = () => {
           type="text"
           fullWidth
           multiline
-          rows={4}
+          rows={6}
           value={content}
           onChange={handleContentChange}
           variant="outlined"
-          sx={{ marginBottom: "16px" }}
+          sx={{
+            marginBottom: "16px",
+            bgcolor: "#f7f7f7",
+            borderRadius: "8px",
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "#E0E0E0",
+              },
+              "&:hover fieldset": {
+                borderColor: "#3f51b5",
+              },
+            },
+          }}
         />
-        
+
         {/* Image upload section */}
         <Box
           sx={{
@@ -106,7 +159,12 @@ const BlogForm = () => {
             borderRadius: "8px",
             padding: "16px",
             textAlign: "center",
-            marginBottom: "16px",
+            marginBottom: "24px",
+            backgroundColor: "#f0f8ff",
+            transition: "all 0.3s ease",
+            "&:hover": {
+              backgroundColor: "#e0f7fa",
+            },
           }}
         >
           <Typography variant="body2" color="textSecondary" mb={1}>
@@ -124,7 +182,12 @@ const BlogForm = () => {
               variant="outlined"
               component="span"
               color="primary"
-              sx={{ padding: "10px", fontSize: "16px" }}
+              sx={{
+                padding: "10px 24px",
+                fontSize: "16px",
+                textTransform: "capitalize",
+                boxShadow: "none",
+              }}
             >
               Choose Image
             </Button>
@@ -136,16 +199,16 @@ const BlogForm = () => {
           <CircularProgress size={50} sx={{ display: "block", margin: "auto" }} />
         ) : (
           image && (
-            <Box sx={{ textAlign: "center", marginBottom: "16px" }}>
+            <Box sx={{ textAlign: "center", marginBottom: "24px" }}>
               <Avatar
                 src={image} // Use the temporary URL as the image source
                 alt="Blog Image Preview"
                 sx={{
-                  width: 100,
-                  height: 100,
+                  width: 120,
+                  height: 120,
                   margin: "auto",
                   borderRadius: "8px",
-                  marginBottom: "8px",
+                  marginBottom: "12px",
                 }}
               />
               <Typography variant="body2" color="textSecondary">
@@ -160,9 +223,15 @@ const BlogForm = () => {
           variant="contained"
           color="primary"
           fullWidth
-          sx={{ padding: "10px", fontSize: "16px" }}
+          sx={{
+            padding: "12px 20px",
+            fontSize: "16px",
+            textTransform: "capitalize",
+            fontWeight: "600",
+            boxShadow: "none",
+          }}
         >
-          Submit
+          Submit Blog
         </Button>
       </Box>
     </Container>

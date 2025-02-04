@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 const ForumNavbar = () => {  
   return (
-    <nav className="p-4 border-b bg-slate-900">
+    <nav className="p-4 border-b bg-blue-700 rounded-md m-9">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-semibold text-white">Forum</h2>
         <Link to="/forumcreation">
