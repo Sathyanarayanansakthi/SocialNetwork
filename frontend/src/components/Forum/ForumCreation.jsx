@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import React, { useState } from "react";
 import ReactQuill from "react-quill"; // Import ReactQuill
 import "react-quill/dist/quill.snow.css"; // Import the default style for Quill
