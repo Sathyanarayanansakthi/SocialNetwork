@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-
 const CollabNav = () => {
   return (
     <div className="bg-blue-700 p-5 m-9 flex justify-between items-center shadow-lg rounded-xl ml-11 px-12 backdrop-blur-lg bg-opacity-90">

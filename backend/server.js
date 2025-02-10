@@ -2,35 +2,25 @@ import express from 'express';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import cors from 'cors';
-import multer from 'multer';  // Import multer for file uploads
-import blogRoutes from './routes/blogRoutes.js'; // Import the blogRoutes.js file
+import collabRoutes from './routes/collabRoutes.js';
 
 dotenv.config();
 
 const app = express();
 
-// Set up multer storage for image uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, './uploads'); // Save the file in the "uploads" directory
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname); // Ensure unique filenames
-  }
-});
-
-const upload = multer({ storage: storage }); // Initialize multer with the storage config
-
+// Middleware
 app.use(express.json());
 app.use(cors({
-  origin: "http://localhost:5173", // Update frontend URL if needed
+  origin: "http://localhost:5173", // Ensure this matches your frontend URL
   methods: "GET,POST,PUT,DELETE",
   allowedHeaders: "Content-Type,Authorization"
 }));
 
-// Routes
-app.use('/api/blogs', blogRoutes); // Use blogRoutes for all blog-related routes
-app.post('/api/blogs/create', upload.single('image'), createBlog); // Special route for blog creation with image upload
+// Serve static files (for uploaded images)
+app.use("/uploads", express.static("uploads"));
+
+// Use routes
+app.use("/api/collab", collabRoutes); // Ensure this matches the API endpoint in your frontend
 
 // MongoDB connection
 mongoose

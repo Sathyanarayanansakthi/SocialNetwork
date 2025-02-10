@@ -1,4 +1,3 @@
-// controllers/collabController.js
 import Collab from "../models/CollabModel.js";
 
 // @desc    Create a new collaboration

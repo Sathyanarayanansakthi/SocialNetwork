@@ -7,6 +7,7 @@ const Collab = () => {
     <div>
       <CollabNav />
       {/* <Sidebar/> */}
+
     </div>
   );
 };

@@ -10,6 +10,7 @@ import ForumCreation from './components/Forum/ForumCreation';
 import Collab from './pages/Collab';
 import Collabform from './components/Collab/Collabform';
 import Event from './pages/Event'
+import Profile from './pages/Profile';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
          <Route path='collab' element={<Collab />} />
          <Route path="collabForm" element={<Collabform />} />
          <Route path='/event' element={<Event />}/>
+         <Route path='/profile' element={<Profile />} />
         </Routes>
       </div>
     </Router>
