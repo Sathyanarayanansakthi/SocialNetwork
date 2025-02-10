@@ -2,26 +2,35 @@ import express from 'express';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import cors from 'cors';
-import authRoutes from './routes/authRoutes.js';
+import multer from 'multer';  // Import multer for file uploads
+import blogRoutes from './routes/blogRoutes.js'; // Import the blogRoutes.js file
 
-// Load environment variables
 dotenv.config();
 
-// Initialize Express app
 const app = express();
 
-// Middleware
-app.use(express.json()); // Parse JSON request bodies
+// Set up multer storage for image uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, './uploads'); // Save the file in the "uploads" directory
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '-' + file.originalname); // Ensure unique filenames
+  }
+});
 
-// Enable CORS (Allow frontend to connect)
+const upload = multer({ storage: storage }); // Initialize multer with the storage config
+
+app.use(express.json());
 app.use(cors({
-    origin: "http://localhost:5173",
-    methods: "GET,POST,PUT,DELETE",
-    allowedHeaders: "Content-Type,Authorization"
+  origin: "http://localhost:5173", // Update frontend URL if needed
+  methods: "GET,POST,PUT,DELETE",
+  allowedHeaders: "Content-Type,Authorization"
 }));
 
 // Routes
-app.use('/api/auth', authRoutes); 
+app.use('/api/blogs', blogRoutes); // Use blogRoutes for all blog-related routes
+app.post('/api/blogs/create', upload.single('image'), createBlog); // Special route for blog creation with image upload
 
 // MongoDB connection
 mongoose

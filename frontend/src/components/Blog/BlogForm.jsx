@@ -1,63 +1,80 @@
-import { Container, Typography, Box, TextField, Button, IconButton, Avatar, CircularProgress } from "@mui/material";
-import { Link } from "react-router-dom";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import CloseIcon from "@mui/icons-material/Close";  // Import Close icon
-import { useState } from "react";
+import React, { useState } from "react";
+import {
+  Container,
+  Typography,
+  Box,
+  TextField,
+  Button,
+  IconButton,
+  Avatar,
+  CircularProgress,
+  Modal,
+} from "@mui/material";
+import { toast } from "react-toastify"; // Import toast
+import CloseIcon from "@mui/icons-material/Close";
+import axios from "axios";
 
-const BlogForm = () => {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [image, setImage] = useState(null); // State for storing the uploaded image
-  const [isUploading, setIsUploading] = useState(false); // State to track the upload status
+const BlogForm = ({ open, handleClose }) => {
+  const [formData, setFormData] = useState({
+    title: "",
+    content: "",
+    image: null,
+  });
+  const [isUploading, setIsUploading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleTitleChange = (e) => setTitle(e.target.value);
-  const handleContentChange = (e) => setContent(e.target.value);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
 
-  // Handle image upload
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setIsUploading(true); // Set uploading state to true while processing
-      setImage(URL.createObjectURL(file)); // Create a temporary URL for the uploaded image
-
-      // Simulate a delay for upload (for example, a network request)
-      setTimeout(() => {
-        setIsUploading(false); // Reset uploading state after image is processed
-      }, 1500);
+      setIsUploading(true);
+      setFormData((prevData) => ({ ...prevData, image: file }));
+      setTimeout(() => setIsUploading(false), 1500);
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // You can send the data (including the image) to an API here
-    console.log("Blog Created:", { title, content, image });
+    const { title, content, image } = formData;
 
-    // Reset the form after submission (optional)
-    setTitle("");
-    setContent("");
-    setImage(null);
-  };
+    if (!title || !content || !image) {
+      return toast.error("Please fill all fields before submitting.");
+    }
 
-  // Close button logic (for example, navigating back to the blog list page)
-  const handleCloseForm = () => {
-    // You can implement closing behavior here, such as redirecting
-    // or just clearing the form (optional).
-    console.log("Form closed");
+    setIsSubmitting(true);
+
+    const formDataToSend = new FormData();
+    formDataToSend.append("title", title);
+    formDataToSend.append("content", content);
+    formDataToSend.append("image", image);
+
+    try {
+      const response = await axios.post("http://localhost:5000/api/blogs/create", formDataToSend, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      toast.success("Blog submitted successfully!");
+      setFormData({ title: "", content: "", image: null });
+      handleClose(); // Close modal after successful submission
+    } catch (error) {
+      console.error("Error submitting blog:", error);
+      toast.error("Error submitting blog. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <Container
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: "100vh",
-        backgroundColor: "#f4f6f8",  // Subtle background color for the page
-      }}
-    >
+    <Modal open={open} onClose={handleClose} sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
       <Box
         component="form"
-        onSubmit={handleSubmit} // Handle form submission
+        onSubmit={handleSubmit}
         sx={{
           backgroundColor: "white",
           borderRadius: "16px",
@@ -69,40 +86,11 @@ const BlogForm = () => {
           border: "1px solid #E0E0E0",
         }}
       >
-        {/* Close button */}
-        <IconButton
-          onClick={handleCloseForm} // Implement the close behavior
-          sx={{
-            position: "absolute",
-            top: 16,
-            right: 16,
-            color: "#f44336",
-            fontSize: "1.5rem",
-          }}
-        >
+        <IconButton onClick={handleClose} sx={{ position: "absolute", top: 16, right: 16, color: "#f44336" }}>
           <CloseIcon />
         </IconButton>
 
-        <IconButton
-          component={Link}
-          to="/blog" // Navigate back to the Blog page
-          sx={{
-            position: "absolute",
-            top: 16,
-            left: 16,
-            color: "#3f51b5",
-            fontSize: "1.5rem",
-          }}
-        >
-          <ArrowBackIcon />
-        </IconButton>
-
-        <Typography
-          variant="h4"
-          textAlign="center"
-          mb={4}
-          sx={{ fontWeight: 600, color: "#2D3A56" }}
-        >
+        <Typography variant="h4" textAlign="center" mb={4} sx={{ fontWeight: 600, color: "#2D3A56" }}>
           Create a New Blog
         </Typography>
 
@@ -111,8 +99,9 @@ const BlogForm = () => {
           type="text"
           fullWidth
           variant="outlined"
-          value={title}
-          onChange={handleTitleChange}
+          value={formData.title}
+          onChange={handleChange}
+          name="title"
           sx={{
             marginBottom: "16px",
             bgcolor: "#f7f7f7",
@@ -134,8 +123,9 @@ const BlogForm = () => {
           fullWidth
           multiline
           rows={6}
-          value={content}
-          onChange={handleContentChange}
+          value={formData.content}
+          onChange={handleChange}
+          name="content"
           variant="outlined"
           sx={{
             marginBottom: "16px",
@@ -152,7 +142,6 @@ const BlogForm = () => {
           }}
         />
 
-        {/* Image upload section */}
         <Box
           sx={{
             border: "2px dashed #42a5f5",
@@ -194,29 +183,26 @@ const BlogForm = () => {
           </label>
         </Box>
 
-        {/* Image preview with loading indication */}
         {isUploading ? (
           <CircularProgress size={50} sx={{ display: "block", margin: "auto" }} />
-        ) : (
-          image && (
-            <Box sx={{ textAlign: "center", marginBottom: "24px" }}>
-              <Avatar
-                src={image} // Use the temporary URL as the image source
-                alt="Blog Image Preview"
-                sx={{
-                  width: 120,
-                  height: 120,
-                  margin: "auto",
-                  borderRadius: "8px",
-                  marginBottom: "12px",
-                }}
-              />
-              <Typography variant="body2" color="textSecondary">
-                Image Preview
-              </Typography>
-            </Box>
-          )
-        )}
+        ) : formData.image ? (
+          <Box sx={{ textAlign: "center", marginBottom: "24px" }}>
+            <Avatar
+              src={URL.createObjectURL(formData.image)}
+              alt="Blog Image Preview"
+              sx={{
+                width: 120,
+                height: 120,
+                margin: "auto",
+                borderRadius: "8px",
+                marginBottom: "12px",
+              }}
+            />
+            <Typography variant="body2" color="textSecondary">
+              Image Preview
+            </Typography>
+          </Box>
+        ) : null}
 
         <Button
           type="submit"
@@ -230,11 +216,12 @@ const BlogForm = () => {
             fontWeight: "600",
             boxShadow: "none",
           }}
+          disabled={isSubmitting}
         >
-          Submit Blog
+          {isSubmitting ? "Submitting..." : "Submit Blog"}
         </Button>
       </Box>
-    </Container>
+    </Modal>
   );
 };
 

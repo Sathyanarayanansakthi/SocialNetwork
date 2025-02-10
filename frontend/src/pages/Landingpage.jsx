@@ -1,5 +1,5 @@
 import { FaUsers, FaShareAlt, FaUniversity, FaPaperPlane, FaLock, FaChartLine, FaComments, FaHandshake, FaNodeJs, FaGithub, FaGoogle, FaJs, FaServer, FaFacebookF, FaTwitter, FaLinkedinIn, FaInstagram } from "react-icons/fa";
-import { SiReact, SiExpress, SiPostgresql, SiMongodb, SiFirebase, SiDocker, SiKubernetes, SiRedis, SiElastic, SiVite, SiPassport, SiMui, SiGraphql } from "react-icons/si";
+import { SiReact, SiExpress,  SiMongodb,  SiDocker,  SiVite, SiPassport, SiMui, } from "react-icons/si";
 import { RiTailwindCssFill } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -39,23 +39,23 @@ const LandingPage = () => {
             <SiExpress className="text-gray-500" />
             <p className="mt-2 text-sm text-gray-400">Express</p>
           </div>
-          <div className="text-center transform hover:scale-110 transition duration-300 ease-in-out">
+           {/* <div className="text-center transform hover:scale-110 transition duration-300 ease-in-out">
             <SiPostgresql className="text-blue-400" />
-            <p className="mt-2 text-sm text-gray-400">PostgreSQL</p>
-          </div>
+            <p className="mt-2 text-sm text-gray-400">PostgreSQL</p> 
+          </div>  */}
           <div className="text-center transform hover:scale-110 transition duration-300 ease-in-out">
             <SiMongodb className="text-green-500" />
             <p className="mt-2 text-sm text-gray-400">MongoDB</p>
           </div>
-          <div className="text-center transform hover:scale-110 transition duration-300 ease-in-out">
+          {/* <div className="text-center transform hover:scale-110 transition duration-300 ease-in-out">
             <SiFirebase className="text-yellow-500" />
             <p className="mt-2 text-sm text-gray-400">Firebase</p>
-          </div>
+          </div> */}
           <div className="text-center transform hover:scale-110 transition duration-300 ease-in-out">
             <SiDocker className="text-blue-600" />
             <p className="mt-2 text-sm text-gray-400">Docker</p>
           </div>
-          <div className="text-center transform hover:scale-110 transition duration-300 ease-in-out">
+          {/* <div className="text-center transform hover:scale-110 transition duration-300 ease-in-out">
             <SiKubernetes className="text-blue-300" />
             <p className="mt-2 text-sm text-gray-400">Kubernetes</p>
           </div>
@@ -66,7 +66,7 @@ const LandingPage = () => {
           <div className="text-center transform hover:scale-110 transition duration-300 ease-in-out">
             <SiElastic className="text-orange-500" />
             <p className="mt-2 text-sm text-gray-400">ElasticSearch</p>
-          </div>
+          </div> */}
           <div className="text-center transform hover:scale-110 transition duration-300 ease-in-out">
             <SiVite className="text-purple-500" />
             <p className="mt-2 text-sm text-gray-400">Vite</p>
@@ -79,10 +79,10 @@ const LandingPage = () => {
             <SiMui className="text-indigo-500" />
             <p className="mt-2 text-sm text-gray-400">Material UI</p>
           </div>
-          <div className="text-center transform hover:scale-110 transition duration-300 ease-in-out">
+          {/* <div className="text-center transform hover:scale-110 transition duration-300 ease-in-out">
             <SiGraphql className="text-pink-500" />
             <p className="mt-2 text-sm text-gray-400">GraphQL</p>
-          </div>
+          </div> */}
           <div className="text-center transform hover:scale-110 transition duration-300 ease-in-out">
             <RiTailwindCssFill className="text-cyan-500" />
             <p className="mt-2 text-sm text-gray-400">Tailwind CSS</p>
