@@ -1,8 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, Divider, Typography, Box } from '@mui/material';
-import { FaHome, FaUsers, FaCogs, FaUser, FaBlog, FaSignOutAlt } from 'react-icons/fa';
+import { FaHome, FaUsers, FaCogs, FaUser, FaBlog, FaSignOutAlt,FaNewspaper } from 'react-icons/fa';
 import { MdEventNote, MdLibraryBooks } from 'react-icons/md';
 import { motion } from 'framer-motion';
+import { Icons } from 'react-toastify';
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -14,13 +15,15 @@ const Sidebar = () => {
 
   const menuItems = [
     { text: 'Home', icon: <FaHome />, path: '/' },
-    { text: 'Dashboard', icon: <MdLibraryBooks />, path: '/dashboard' },
+    { text: 'Pattern', icon: <MdLibraryBooks />, path: '/pattern' },
     { text: 'Events', icon: <MdEventNote />, path: '/event' },
     { text: 'Forum', icon: <FaUsers />, path: '/forum' },
     { text: 'Collaboration', icon: <FaCogs />, path: '/collab' },
     { text: 'Profile', icon: <FaUser />, path: '/profile' },
     { text: 'Blog', icon: <FaBlog />, path: '/blog' },
+    { text: 'Paper', icon: <FaNewspaper />, path: '/paper' } 
   ];
+  
 
   return (
     <Drawer
@@ -98,7 +101,7 @@ const Sidebar = () => {
             borderRadius: '8px',
           }}
         >
-          <ListItemIcon sx={{ color: 'white', minWidth: '40px' }}>
+          <ListItemIcon sx={{ color: 'white', minWidth: '40px', rounded:"sm" }}>
             <FaSignOutAlt />
           </ListItemIcon>
           <ListItemText primary="Logout" />

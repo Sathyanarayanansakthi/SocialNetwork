@@ -11,6 +11,8 @@ import Collab from './pages/Collab';
 import Collabform from './components/Collab/Collabform';
 import Event from './pages/Event'
 import Profile from './pages/Profile';
+import Paper from './pages/Paper';
+import Pattern from './pages/Pattern';
 
 function App() {
   return (
@@ -29,6 +31,8 @@ function App() {
          <Route path="collabForm" element={<Collabform />} />
          <Route path='/event' element={<Event />}/>
          <Route path='/profile' element={<Profile />} />
+         <Route path='/paper' element={<Paper />} />
+         <Route path="/pattern" element={<Pattern />} />
         </Routes>
       </div>
     </Router>
