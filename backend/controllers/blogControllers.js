@@ -1,11 +1,11 @@
-import Blog from '../models/Blog.Model.js'; // Adjust the path as needed
+import Blog from '../models/Blog.Model.js';
 
 export const createBlog = async (req, res) => {
   const { title, content } = req.body;
-  const image = req.file ? req.file.path : null; // If image is uploaded, store the file path
+  const image = req.file ? req.file.path : null; // Get the file path if image is uploaded
 
-  if (!title || !content || !image) {
-    return res.status(400).json({ message: 'All fields are required.' });
+  if (!title || !content) {
+    return res.status(400).json({ message: 'Title and content are required.' });
   }
 
   try {

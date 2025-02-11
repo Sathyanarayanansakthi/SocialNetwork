@@ -37,35 +37,42 @@ const BlogForm = ({ open, handleClose }) => {
     }
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { title, content, image } = formData;
 
+    // Validate form fields
     if (!title || !content || !image) {
       return toast.error("Please fill all fields before submitting.");
     }
 
     setIsSubmitting(true);
 
+    // Prepare the data to send in the request
     const formDataToSend = new FormData();
     formDataToSend.append("title", title);
     formDataToSend.append("content", content);
     formDataToSend.append("image", image);
 
     try {
+      // Make the POST request to the server to create the blog
       const response = await axios.post("http://localhost:5000/api/blogs/create", formDataToSend, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
 
+      // On success, show success message, reset form, and close modal
       toast.success("Blog submitted successfully!");
       setFormData({ title: "", content: "", image: null });
       handleClose(); // Close modal after successful submission
     } catch (error) {
+      // Handle errors during submission
       console.error("Error submitting blog:", error);
       toast.error("Error submitting blog. Please try again.");
     } finally {
+      // Reset the submitting state
       setIsSubmitting(false);
     }
   };
@@ -226,3 +233,4 @@ const BlogForm = ({ open, handleClose }) => {
 };
 
 export default BlogForm;
+
