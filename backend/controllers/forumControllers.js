@@ -1,69 +1,26 @@
-import Forum from "../models/ForumModel.js";
+import Post from "../models/ForumModel.js";
 
-// @desc    Create a new forum post
-// @route   POST /api/forums
-// @access  Public
-export const createForumPost = async (req, res) => {
+// Create a new forum post
+export const createPost = async (req, res) => {
   try {
     const { title, content, tags } = req.body;
+    const tagsArray = tags.split(",").map(tag => tag.trim());
 
-    if (!title || !content || !tags) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
+    const newPost = new Post({ title, content, tags: tagsArray });
+    await newPost.save();
 
-    const newForumPost = new Forum({
-      title,
-      content,
-      tags: tags.split(",").map((tag) => tag.trim()), // Convert tags into an array
-    });
-
-    await newForumPost.save();
-    res.status(201).json({ message: "Forum post created successfully", newForumPost });
+    res.status(201).json({ message: "Post created successfully", post: newPost });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: "Error creating post" });
   }
 };
 
-// @desc    Get all forum posts
-// @route   GET /api/forums
-// @access  Public
-export const getAllForumPosts = async (req, res) => {
+// Get all posts
+export const getPosts = async (req, res) => {
   try {
-    const forumPosts = await Forum.find().sort({ createdAt: -1 });
-    res.status(200).json(forumPosts);
+    const posts = await Post.find().sort({ createdAt: -1 });
+    res.status(200).json(posts);
   } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-// @desc    Get a single forum post by ID
-// @route   GET /api/forums/:id
-// @access  Public
-export const getForumPostById = async (req, res) => {
-  try {
-    const forumPost = await Forum.findById(req.params.id);
-    if (!forumPost) {
-      return res.status(404).json({ message: "Forum post not found" });
-    }
-    res.status(200).json(forumPost);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-// @desc    Delete a forum post
-// @route   DELETE /api/forums/:id
-// @access  Public
-export const deleteForumPost = async (req, res) => {
-  try {
-    const forumPost = await Forum.findById(req.params.id);
-    if (!forumPost) {
-      return res.status(404).json({ message: "Forum post not found" });
-    }
-
-    await forumPost.deleteOne();
-    res.status(200).json({ message: "Forum post deleted successfully" });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: "Error fetching posts" });
   }
 };

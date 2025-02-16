@@ -1,4 +1,4 @@
-import React from 'react'
+// import React from 'react'
 import EventNav from '../components/Event/EventNav'
 
 const Event = () => {

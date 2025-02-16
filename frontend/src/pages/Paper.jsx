@@ -1,11 +1,10 @@
 // import React from 'react'
-import PaperNav from "../components/Paper/paperNav"; // Correct casing
+import PaperNav from "../components/Paper/paperNav"; 
 
 const Paper = () => {
   return (
     <div>
-      Paper
-      <PaperNav /> {/* Correct component usage */}
+      <PaperNav /> 
     </div>
   );
 };

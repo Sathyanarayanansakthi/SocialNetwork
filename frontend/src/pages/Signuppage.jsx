@@ -16,34 +16,18 @@ function SignupPage() {
   const registerUser = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.post('http://localhost:5000/api/auth/signUp', { //endpoint of the signup added
+      const { data } = await axios.post('http://localhost:5000/api/auth/signup', {
         username,
         email,
         password,
       });
 
-      console.log('User registered successfully:', data);
-      toast.success('Registration successful! Redirecting...');//toster message
-      setTimeout(() => {
-        navigate('/dashboard');
-      }, 2000);
+      toast.success('Registration successful! Redirecting...');
+      setTimeout(() => navigate('/dashboard'), 2000);
     } catch (err) {
-      const errorMessage = err.response?.data?.error || 'Registration failed.';
-      setErrorMessage(errorMessage);
-      toast.error(errorMessage);
-      console.error('Registration failed:', err);
+      setErrorMessage(err.response?.data?.error || 'Registration failed.');
+      toast.error(err.response?.data?.error || 'Registration failed.');
     }
-  };
-
-
-  // Google Auth
-  const handleGoogleSignup = () => {
-    console.log('Google signup clicked');
-  };
-
-  // Github Auth
-  const handleGithubSignup = () => {
-    console.log('GitHub signup clicked');
   };
 
   return (
@@ -56,56 +40,20 @@ function SignupPage() {
 
       <Box component="form" onSubmit={registerUser} noValidate sx={{ mt: 2 }}>
         <Stack spacing={2}>
-          <TextField
-            label="Username"
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            fullWidth required
-          />
-          <TextField
-            label="Email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            fullWidth required
-          />
-          <TextField
-            label="Password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            fullWidth required
-          />
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            fullWidth
-            sx={{ mt: 2 }}
-          >
+          <TextField label="Username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} fullWidth required />
+          <TextField label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} fullWidth required />
+          <TextField label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} fullWidth required />
+          <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
             Sign Up
           </Button>
         </Stack>
       </Box>
 
-      <Button
-        variant="contained"
-        startIcon={<GoogleIcon />}
-        fullWidth
-        sx={{ mt: 2, bgcolor: 'red', color: 'white', '&:hover': { bgcolor: 'darkred' } }}
-        onClick={handleGoogleSignup}
-      >
+      <Button variant="contained" startIcon={<GoogleIcon />} fullWidth sx={{ mt: 2, bgcolor: 'red', color: 'white' }}>
         Sign Up with Google
       </Button>
 
-      <Button
-        variant="contained"
-        startIcon={<GitHubIcon />}
-        fullWidth
-        sx={{ mt: 2, bgcolor: 'black', color: 'white', '&:hover': { bgcolor: 'gray' } }}
-        onClick={handleGithubSignup}
-      >
+      <Button variant="contained" startIcon={<GitHubIcon />} fullWidth sx={{ mt: 2, bgcolor: 'black', color: 'white' }}>
         Sign Up with GitHub
       </Button>
 
@@ -116,17 +64,7 @@ function SignupPage() {
         </Button>
       </Typography>
 
-      <ToastContainer
-        position="top-center"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
+      <ToastContainer position="top-center" autoClose={3000} hideProgressBar={false} />
     </Container>
   );
 }

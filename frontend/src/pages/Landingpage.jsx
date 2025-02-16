@@ -56,10 +56,10 @@ const LandingPage = () => {
       <div className="py-20 bg-gray-800 text-center px-6">
         <h2 className="text-3xl font-bold mb-6">About Our Social Network</h2>
         <p className="max-w-3xl mx-auto text-lg">
-          Our platform is designed to empower users by providing a dynamic environment where collaboration, networking, and knowledge-sharing thrive.
+          Our platform is designed to empower users by providing a dynamic environment where collaboration, networking and knowledge-sharing thrive.
         </p>
         <p className="max-w-3xl mx-auto text-lg mt-4">
-          Whether you are a student looking for mentorship, a researcher seeking project collaboration, or a professional expanding your network, our platform offers unique features tailored to your needs.
+          Whether you are a student looking for mentorship, a researcher seeking project collaboration or a professional expanding your network our platform offers unique features tailored to your needs.
         </p>
       </div>
     </div>

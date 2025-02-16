@@ -1,55 +1,66 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import mongoose from 'mongoose';
-import cors from 'cors';
-import multer from 'multer'; // Import multer for file uploads
-import blogRoutes from './routes/blogRoutes.js'; // Import blog routes
-import collabRoutes from './routes/collabRoutes.js';
+import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
+import bodyParser from "body-parser";
+import mongoose from "mongoose";
+import path from "path";
+import blogRoutes from "./routes/blogRoutes.js";
+import collabRoutes from "./routes/collabRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
+import patternRoutes from "./routes/patternRoutes.js";
+import forumRoutes from "./routes/forumRoutes.js";
 
 // Load environment variables
 dotenv.config();
 
 // Initialize Express app
 const app = express();
+const PORT = process.env.PORT || 5000;
 
-// Multer configuration for file uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // Save uploaded files to the 'uploads' folder
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname); // Unique filename
-  },
-});
-
-const upload = multer({ storage });
-
-// Middleware
-app.use(express.json()); // Parse JSON request bodies
-app.use(cors({
-  origin: "http://localhost:5173", // Allow requests from your frontend URL
-  methods: "GET,POST,PUT,DELETE", // Allow these HTTP methods
-  allowedHeaders: "Content-Type,Authorization", // Allow these headers
-}));
-
-// Serve static files (e.g., uploaded images)
-app.use("/uploads", express.static("uploads"));
-
-// Use routes
-app.use("/api/collab", collabRoutes); // Mount collabRoutes at /api/collab
-app.use("/api/blogs", blogRoutes); // Mount blogRoutes at /api/blogs
-
-// MongoDB connection
+// Connect to MongoDB (Directly inside server.js)
 mongoose
-  .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('MongoDB Connected'))
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("✅ MongoDB Connected"))
   .catch((error) => {
-    console.error('Error connecting to MongoDB:', error);
-    process.exit(1); // Exit the process if MongoDB connection fails
+    console.error("❌ MongoDB Connection Error:", error);
+    process.exit(1);
   });
 
-// Start server
-const port = process.env.PORT || 5000;
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+// Middleware
+app.use(express.json());
+app.use(bodyParser.json());
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    methods: "GET,POST,PUT,DELETE",
+    allowedHeaders: "Content-Type,Authorization",
+  })
+);
+
+// Serve static files (PDF uploads)
+const __dirname = path.resolve();
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+// Routes
+app.use("/api/collab", collabRoutes);
+app.use("/api/blogs", blogRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/pdf", patternRoutes);
+app.use("/api/posts", forumRoutes); // ✅ Forum posts added
+
+// Default route (health check)
+app.get("/", (req, res) => {
+  res.send("🚀 API is running...");
 });
+
+// Global Error Handling Middleware
+app.use((err, req, res, next) => {
+  console.error(" Server Error:", err.message);
+  res.status(500).json({ error: "Internal Server Error" });
+});
+
+// Start server
+app.listen(PORT, () => console.log(` Server running on port ${PORT}`));
