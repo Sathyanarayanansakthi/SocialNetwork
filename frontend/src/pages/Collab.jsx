@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import CollabNav from "../components/Collab/CollabNav";
 import axios from "axios";
 import { motion } from "framer-motion";
+import { toast } from 'react-toastify'; // Import toast
 
 const Collab = () => {
   const [collabs, setCollabs] = useState([]);
@@ -32,30 +33,39 @@ const Collab = () => {
   const handleShare = (id) => {
     const shareableLink = `${window.location.origin}/collab/${id}`;
     navigator.clipboard.writeText(shareableLink);
-    alert("Link copied to clipboard!");
+    toast.success("Link copied to clipboard!", { // Use toast here
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
   };
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-indigo-500"></div>
+      <div className="flex items-center justify-center h-screen">
+        <div className="w-16 h-16 border-t-4 border-indigo-500 rounded-full animate-spin"></div>
       </div>
     );
   }
 
   if (error) {
-    return <div className="text-center text-red-500 mt-6">{error}</div>;
+    return <div className="mt-6 text-center text-red-500">{error}</div>;
   }
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
       <CollabNav />
-      <div className="max-w-4xl mx-auto mt-8 pb-10">
-        <h1 className="text-3xl font-bold text-center text-indigo-600 mb-6">Explore Collaborations</h1>
+      <div className="max-w-4xl pb-10 mx-auto mt-8">
+        <h1 className="mb-6 text-3xl font-bold text-center text-indigo-600">Explore Collaborations</h1>
         <div className="space-y-6">
           {collabs.map((collab) => (
             <motion.div whileHover={{ scale: 1.02 }} key={collab._id}>
-              <div className="bg-white p-6 rounded-xl shadow-md transition duration-300 hover:shadow-lg border border-gray-200">
+              <div className="p-6 transition duration-300 bg-white border border-gray-200 shadow-md rounded-xl hover:shadow-lg">
                 <div className="flex items-start">
                   <div className="flex-1">
                     <h2 className="text-xl font-semibold text-indigo-800">{collab.title}</h2>
@@ -65,19 +75,19 @@ const Collab = () => {
                     <p className="mt-2 text-gray-700">
                       {expanded[collab._id] ? collab.description : `${collab.description.slice(0, 100)}...`}
                     </p>
-                    <button onClick={() => toggleExpand(collab._id)} className="text-indigo-600 mt-2">
+                    <button onClick={() => toggleExpand(collab._id)} className="mt-2 text-indigo-600">
                       {expanded[collab._id] ? "Read Less" : "Read More"}
                     </button>
                     <h3 className="mt-4 font-semibold text-gray-700">Skills Required:</h3>
                     <div className="flex flex-wrap gap-2 mt-2">
                       {collab.skills.map((skill, index) => (
-                        <span key={index} className="bg-indigo-600 text-white px-3 py-1 rounded-full text-sm">
+                        <span key={index} className="px-3 py-1 text-sm text-white bg-indigo-600 rounded-full">
                           {skill}
                         </span>
                       ))}
                     </div>
                     <div className="flex justify-end mt-4">
-                      <button onClick={() => handleShare(collab._id)} className="text-indigo-600 font-semibold">
+                      <button onClick={() => handleShare(collab._id)} className="font-semibold text-indigo-600">
                         Share
                       </button>
                     </div>

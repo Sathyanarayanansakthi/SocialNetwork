@@ -1,52 +1,89 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import PatternNav from "../components/Pattern/patternNav";
+import { Card, CardContent, Typography, Grid, Box, Link, CircularProgress } from "@mui/material"; // Import Typography
 
 const Pattern = () => {
-    const [patterns, setPatterns] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+  const [patterns, setPatterns] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-    // Fetch patterns data from backend when component mounts
-    useEffect(() => {
-        const fetchPatterns = async () => {
-            try {
-                const response = await axios.get("http://localhost:5000/api/pdf/patterns");
-                setPatterns(response.data.patterns);
-            } catch (err) {
-                setError("Failed to fetch patterns");
-            } finally {
-                setLoading(false);
-            }
-        };
+  useEffect(() => {
+    const fetchPatterns = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/patterns");
+        console.log("Response Data:", response.data);
 
-        fetchPatterns();
-    }, []);
+        if (response.data && response.data.patterns) {
+          setPatterns(response.data.patterns);
+        } else if (Array.isArray(response.data)) {
+          setPatterns(response.data);
+        } else {
+          console.error("Unexpected data format:", response.data);
+          setError("Unexpected data format from server.");
+        }
+      } catch (err) {
+        setError("Failed to fetch patterns");
+        console.error("Error fetching patterns:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    return (
-        <div>
-            <PatternNav />
-            <div className="p-5">
-                {loading ? (
-                    <p>Loading...</p>
-                ) : error ? (
-                    <p className="text-red-500">{error}</p>
-                ) : (
-                    <div>
-                        <h2 className="text-2xl font-semibold mb-4">Patterns</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {patterns.map((pattern) => (
-                                <div key={pattern.id} className="bg-white p-4 rounded-lg shadow-lg">
-                                    <h3 className="text-xl font-semibold">{pattern.name}</h3>
-                                    <p>{pattern.description}</p>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                )}
-            </div>
-        </div>
-    );
+    fetchPatterns();
+  }, []);
+
+  if (loading) {
+    return <CircularProgress />;
+  }
+
+  if (error) {
+    return <Typography variant="body1" color="error">{error}</Typography>;
+  }
+
+  return (
+    <div>
+      <PatternNav />
+      <Box sx={{ p: 5, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <Typography variant="h4" component="h2" gutterBottom sx={{ fontWeight: 'bold', mb: 4 }}>
+          Patterns
+        </Typography>
+
+        <Grid container spacing={4} justifyContent="center">
+          {patterns.map((pattern) => (
+            <Grid item xs={12} sm={6} md={4} key={pattern._id}>
+              <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                <CardContent sx={{ flexGrow: 1 }}>
+                  <Typography variant="h5" component="h3" gutterBottom sx={{ fontWeight: 'bold' }}>
+                    {pattern.name}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    About: {pattern.about}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    Guide: {pattern.guide}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Details: {pattern.patternDetails}
+                  </Typography>
+                </CardContent>
+                <Box sx={{ p: 2 }}>
+                  <Link
+                    href={pattern.fileUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    variant="body2"
+                  >
+                    View PDF
+                  </Link>
+                </Box>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
+    </div>
+  );
 };
 
 export default Pattern;
