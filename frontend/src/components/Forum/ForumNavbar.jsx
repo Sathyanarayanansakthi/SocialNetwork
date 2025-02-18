@@ -6,7 +6,7 @@ const ForumNavbar = () => {
   const [open, setOpen] = useState(false); // State to control popup visibility
 
   return (
-    <nav className="p-4 border-b bg-blue-700 rounded-md m-9">
+    <nav className="p-5 bg-blue-700 border-b rounded-md">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-semibold text-white">Forum</h2>
         <Button

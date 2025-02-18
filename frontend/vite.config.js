@@ -12,4 +12,9 @@ export default defineConfig({
       },
     },
   },
+  resolve: {
+    alias: {
+      '@shardcn/ui': '/node_modules/@shardcn/ui',
+    },
+  },
 });

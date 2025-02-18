@@ -1,30 +1,39 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import ForumNavbar from "../components/Forum/ForumNavbar";
-import { Card, CardContent, CardActions, Typography, Button, Grid, Box, Divider } from "@mui/material";
+import {
+  Container,
+  Typography,
+  Card,
+  CardContent,
+  CardActions,
+  Button,
+  Box,
+  Divider,
+  Avatar,
+  Chip,
+} from "@mui/material";
 
 const Forum = () => {
-  const [posts, setPosts] = useState([]);  // State to store the posts
-  const [loading, setLoading] = useState(true);  // State to manage loading state
-  const [error, setError] = useState(null);  // State to manage error if any
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Fetch the posts data from the backend when the component mounts
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/posts");  // Change this to your actual backend API endpoint
-        setPosts(response.data);  // Set the data into the state
-        setLoading(false);  // Set loading to false once data is fetched
+        const response = await axios.get("http://localhost:5000/api/posts");
+        setPosts(response.data);
+        setLoading(false);
       } catch (_) {
-        setError("Error fetching posts.");  // Set an error message if something goes wrong
-        setLoading(false);  // Set loading to false even in case of error
+        setError("Error fetching posts.");
+        setLoading(false);
       }
     };
 
     fetchPosts();
-  }, []);  // Empty dependency array means it runs once when the component mounts
+  }, []);
 
-  // Show loading message or error if there's an issue
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -33,72 +42,103 @@ const Forum = () => {
     return <div>{error}</div>;
   }
 
+  
   return (
-    <div>
+    <div className="min-h-screen bg-[#121212] text-gray-300"> {/* Darker background */}
       <ForumNavbar />
-      <Box sx={{ padding: 3 }}>
-        <Typography variant="h4" gutterBottom>
+      <Container maxWidth="lg" sx={{ pt: 4 }}>
+        <Typography variant="h4" component="h2" gutterBottom color="white">
           Forum Posts
         </Typography>
         {posts.length === 0 ? (
-          <Typography variant="h6" color="textSecondary">
+          <Typography variant="body1" color="gray">
             No posts available.
           </Typography>
         ) : (
-          <Grid container spacing={3}>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 4 }}>
             {posts.map((post) => (
-              <Grid item xs={12} sm={6} md={4} key={post._id}>
-                <Card sx={{ boxShadow: 3, borderRadius: 2 }}>
-                  <CardContent>
-                    <Typography variant="h5" gutterBottom>
-                      {post.title}
+              <Card key={post._id} sx={{ bgcolor: "#1e1e1e", color: "white", transition: "0.3s", "&:hover": { transform: "scale(1.02)" } }}> {/* Darker card background */}
+                <CardContent>
+                  <Typography variant="h5" component="h3" gutterBottom color="white">
+                    {post.title}
+                  </Typography>
+                  <Typography variant="body2" color="#9aa0a6" gutterBottom> {/* Lighter gray for meta */}
+                    Posted by {post.author || "Anonymous"} - {new Date().toLocaleDateString()}
+                  </Typography>
+                  <Typography variant="body1" color="#c5c8ce"> {/* Slightly lighter gray for content */}
+                    {post.content}
+                  </Typography>
+                  <Box sx={{ mt: 2 }}>
+                    <Typography variant="body2" color="#9aa0a6" display="inline"> {/* Lighter gray for tags label */}
+                      Tags:&nbsp;
                     </Typography>
-                    <Typography variant="body2" color="textSecondary" paragraph>
-                      {post.content}
-                    </Typography>
-                    <Typography variant="body2" color="textPrimary">
-                      <strong>Tags:</strong> {post.tags.join(", ")}
-                    </Typography>
-                  </CardContent>
-                  <CardActions>
-                    <Button size="small" color="primary">
-                      Read More
-                    </Button>
-                  </CardActions>
-                  <Divider />
-                  <CardContent>
-                    <Typography variant="h6" gutterBottom>
-                      Comments
-                    </Typography>
-                    {post.comments && post.comments.length > 0 ? (
-                      post.comments.map((comment) => (
-                        <Box
-                          key={comment._id}
-                          sx={{
-                            padding: 2,
-                            backgroundColor: "#f9f9f9",
-                            marginBottom: 1,
-                            borderRadius: 1,
-                            boxShadow: 1,
-                          }}
-                        >
-                          <Typography variant="body2">
-                            <strong>{comment.author}</strong>: {comment.text}
+                    {post.tags.map((tag, index) => (
+                      <Chip
+                        key={index}
+                        label={tag}
+                        size="small"
+                        sx={{
+                          bgcolor: "#333", // Darker tag background
+                          color: "#c5c8ce", // Lighter gray for tag text
+                          mr: 1,
+                          "&:hover": { bgcolor: "#444" }, // Slightly darker on hover
+                        }}
+                      />
+                    ))}
+                  </Box>
+                </CardContent>
+                <CardActions>
+                  <Button
+                    variant="contained"
+                    sx={{
+                      bgcolor: "#2196f3", // Standard blue
+                      "&:hover": { bgcolor: "#1976d2" }, // Slightly darker blue on hover
+                      color: "white",
+                    }}
+                  >
+                    Read More
+                  </Button>
+                </CardActions>
+                <Divider sx={{ bgcolor: "#333" }} /> {/* Darker divider */}
+                <CardContent>
+                  <Typography variant="h6" component="h4" gutterBottom color="white">
+                    Comments
+                  </Typography>
+                  {post.comments && post.comments.length > 0 ? (
+                    post.comments.map((comment) => (
+                      <Box
+                        key={comment._id}
+                        sx={{
+                          display: "flex",
+                          alignItems: "flex-start",
+                          p: 2,
+                          mb: 2,
+                          bgcolor: "#282828", // Darker comment background
+                          borderRadius: 1,
+                        }}
+                      >
+                        <Avatar sx={{ width: 36, height: 36, mr: 2, mt: 0.5, bgcolor: "#3f3f3f" }} /> {/* Slightly lighter avatar background */}
+                        <Box>
+                          <Typography variant="body2" fontWeight="bold" color="gray.300">
+                            {comment.author}
+                          </Typography>
+                          <Typography variant="body2" color="#c5c8ce"> {/* Lighter gray for comment text */}
+                            {comment.text}
                           </Typography>
                         </Box>
-                      ))
-                    ) : (
-                      <Typography variant="body2" color="textSecondary">
-                        No comments yet.
-                      </Typography>
-                    )}
-                  </CardContent>
-                </Card>
-              </Grid>
+                      </Box>
+                    ))
+                  ) : (
+                    <Typography variant="body2" color="gray">
+                      No comments yet.
+                    </Typography>
+                  )}
+                </CardContent>
+              </Card>
             ))}
-          </Grid>
+          </Box>
         )}
-      </Box>
+      </Container>
     </div>
   );
 };

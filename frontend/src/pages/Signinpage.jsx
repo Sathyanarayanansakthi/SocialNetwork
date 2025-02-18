@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Box, Button, TextField, Typography, Container, Alert, Stack } from '@mui/material';
 import { Google as GoogleIcon, GitHub as GitHubIcon } from '@mui/icons-material';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { Button, TextField, Typography, Container, Box, Stack, Alert } from '@mui/material';
 import toast, { Toaster } from 'react-hot-toast';
 
 function SigninPage() {
@@ -20,18 +20,25 @@ function SigninPage() {
     }
 
     try {
-      // eslint-disable-next-line no-unused-vars
-      const response = await axios.post('http://localhost:5000/api/auth/signin', {  //adding end point of the sigin
+      const response = await axios.post('http://localhost:5000/api/auth/signin', {
         email,
         password,
       });
-      
+
       toast.success('Signed in successfully!');
-      navigate('/dashboard'); // Redirect on success
+      navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.error || 'Something went wrong');
       toast.error(err.response?.data?.error || 'Something went wrong');
     }
+  };
+
+  const handleGoogleLogin = () => {
+    window.location.href = 'http://localhost:5000/api/auth/google';
+  };
+
+  const handleGitHubLogin = () => {
+    window.location.href = 'http://localhost:5000/api/auth/github';
   };
 
   return (
@@ -71,6 +78,7 @@ function SigninPage() {
           startIcon={<GoogleIcon />}
           fullWidth
           sx={{ bgcolor: 'red', color: 'white', '&:hover': { bgcolor: 'darkred' } }}
+          onClick={handleGoogleLogin}
         >
           Sign in with Google
         </Button>
@@ -79,6 +87,7 @@ function SigninPage() {
           startIcon={<GitHubIcon />}
           fullWidth
           sx={{ bgcolor: 'black', color: 'white', '&:hover': { bgcolor: 'gray' } }}
+          onClick={handleGitHubLogin}
         >
           Sign in with GitHub
         </Button>

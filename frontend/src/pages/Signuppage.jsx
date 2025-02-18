@@ -30,6 +30,14 @@ function SignupPage() {
     }
   };
 
+  const handleGoogleLogin = () => {
+    window.location.href = 'http://localhost:5000/api/auth/google';
+  };
+
+  const handleGitHubLogin = () => {
+    window.location.href = 'http://localhost:5000/api/auth/github';
+  };
+
   return (
     <Container maxWidth="xs" sx={{ mt: 8, p: 4, bgcolor: 'white', borderRadius: 2, boxShadow: 3 }}>
       <Typography variant="h5" component="h1" textAlign="center" gutterBottom>
@@ -49,11 +57,23 @@ function SignupPage() {
         </Stack>
       </Box>
 
-      <Button variant="contained" startIcon={<GoogleIcon />} fullWidth sx={{ mt: 2, bgcolor: 'red', color: 'white' }}>
+      <Button 
+        variant="contained" 
+        startIcon={<GoogleIcon />} 
+        fullWidth 
+        sx={{ mt: 2, bgcolor: 'red', color: 'white' }}
+        onClick={handleGoogleLogin}
+      >
         Sign Up with Google
       </Button>
 
-      <Button variant="contained" startIcon={<GitHubIcon />} fullWidth sx={{ mt: 2, bgcolor: 'black', color: 'white' }}>
+      <Button 
+        variant="contained" 
+        startIcon={<GitHubIcon />} 
+        fullWidth 
+        sx={{ mt: 2, bgcolor: 'black', color: 'white' }}
+        onClick={handleGitHubLogin}
+      >
         Sign Up with GitHub
       </Button>
 
