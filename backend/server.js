@@ -1,14 +1,15 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import path from "path";
-import blogRoutes from "./routes/blogRoutes.js";
+import blogRoutes from "./routes/blogRoutes.js"; // Import your routes
 import collabRoutes from "./routes/collabRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import patternRoutes from "./routes/patternRoutes.js";
 import forumRoutes from "./routes/forumRoutes.js";
+import eventRoutes from "./routes/eventRoutes.js";
+
 
 dotenv.config();
 
@@ -27,31 +28,27 @@ mongoose
   });
 
 app.use(express.json());
-app.use(bodyParser.json());
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    origin: process.env.FRONTEND_URL || "http://localhost:5173", // **CRITICAL: Verify this!**
     methods: "GET,POST,PUT,DELETE",
     allowedHeaders: "Content-Type,Authorization",
   })
 );
 
-const __dirname = path.resolve();
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+const __dirname = path.resolve(); // This is important for correct path resolution
+app.use("/uploads", express.static(path.join(__dirname, "uploads"))); // Serve static files
 
+// Routes - Make sure you are using correct paths here.
 app.use("/api/collab", collabRoutes);
 app.use("/api/blogs", blogRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/api/patterns", patternRoutes); // Correct route for patterns
+app.use("/api/patterns", patternRoutes);
 app.use("/api/posts", forumRoutes);
+app.use("/api/events", eventRoutes);
 
 app.get("/", (req, res) => {
   res.send("🚀 API is running...");
-});
-
-app.use((err, req, res, next) => {
-  console.error("Server Error:", err);
-  res.status(500).json({ error: "Internal Server Error" });
 });
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
