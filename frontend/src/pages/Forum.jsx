@@ -2,31 +2,32 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import ForumNavbar from "../components/Forum/ForumNavbar";
 import {
-  Container,
+  List,
+  ListItem,
+  ListItemText,
+  Collapse,
   Typography,
-  Card,
-  CardContent,
-  CardActions,
+  TextField,
   Button,
   Box,
-  Divider,
-  Avatar,
-  Chip,
 } from "@mui/material";
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
 
 const Forum = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [expanded, setExpanded] = useState(null);
+  const [commentData, setCommentData] = useState({});
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         const response = await axios.get("http://localhost:5000/api/posts");
         setPosts(response.data);
-        setLoading(false);
-      } catch (_) {
+      } catch (err) {
         setError("Error fetching posts.");
+      } finally {
         setLoading(false);
       }
     };
@@ -34,111 +35,129 @@ const Forum = () => {
     fetchPosts();
   }, []);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  const handleExpand = (postId) => {
+    setExpanded(expanded === postId ? null : postId);
+  };
 
-  if (error) {
-    return <div>{error}</div>;
-  }
+  const handleCommentChange = (postId, value) => {
+    setCommentData((prev) => ({ ...prev, [postId]: value }));
+  };
 
-  
+  const submitComment = async (postId) => {
+    try {
+      await axios.post(`http://localhost:5000/api/posts/${postId}/comments`, {
+        author: "Anonymous",
+        text: commentData[postId] || "",
+      });
+      setCommentData((prev) => ({ ...prev, [postId]: "" }));
+
+      const response = await axios.get("http://localhost:5000/api/posts");
+      setPosts(response.data);
+    } catch (error) {
+      alert("Error adding comment.");
+    }
+  };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
+
   return (
-    <div className="min-h-screen bg-[#121212] text-gray-300"> {/* Darker background */}
+    <div className="bg-gray-900 text-white min-h-screen">
       <ForumNavbar />
-      <Container maxWidth="lg" sx={{ pt: 4 }}>
-        <Typography variant="h4" component="h2" gutterBottom color="white">
+      <Box sx={{ maxWidth: 800, margin: "auto", padding: 3 }}>
+        <Typography variant="h4" gutterBottom>
           Forum Posts
         </Typography>
         {posts.length === 0 ? (
-          <Typography variant="body1" color="gray">
+          <Typography variant="h6" color="textSecondary">
             No posts available.
           </Typography>
         ) : (
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 4 }}>
+          <List>
             {posts.map((post) => (
-              <Card key={post._id} sx={{ bgcolor: "#1e1e1e", color: "white", transition: "0.3s", "&:hover": { transform: "scale(1.02)" } }}> {/* Darker card background */}
-                <CardContent>
-                  <Typography variant="h5" component="h3" gutterBottom color="white">
-                    {post.title}
-                  </Typography>
-                  <Typography variant="body2" color="#9aa0a6" gutterBottom> {/* Lighter gray for meta */}
-                    Posted by {post.author || "Anonymous"} - {new Date().toLocaleDateString()}
-                  </Typography>
-                  <Typography variant="body1" color="#c5c8ce"> {/* Slightly lighter gray for content */}
-                    {post.content}
-                  </Typography>
-                  <Box sx={{ mt: 2 }}>
-                    <Typography variant="body2" color="#9aa0a6" display="inline"> {/* Lighter gray for tags label */}
-                      Tags:&nbsp;
-                    </Typography>
-                    {post.tags.map((tag, index) => (
-                      <Chip
-                        key={index}
-                        label={tag}
-                        size="small"
-                        sx={{
-                          bgcolor: "#333", // Darker tag background
-                          color: "#c5c8ce", // Lighter gray for tag text
-                          mr: 1,
-                          "&:hover": { bgcolor: "#444" }, // Slightly darker on hover
-                        }}
-                      />
-                    ))}
-                  </Box>
-                </CardContent>
-                <CardActions>
-                  <Button
-                    variant="contained"
+              <div key={post._id}>
+                <ListItem
+                  button
+                  onClick={() => handleExpand(post._id)}
+                  sx={{
+                    backgroundColor: "#222",
+                    borderRadius: 1,
+                    marginBottom: 1,
+                    boxShadow: 2,
+                  }}
+                >
+                  <ListItemText
+                    primary={<Typography variant="h6">{post.title}</Typography>}
+                  />
+                  {expanded === post._id ? <ExpandLess /> : <ExpandMore />}
+                </ListItem>
+                <Collapse in={expanded === post._id} timeout="auto" unmountOnExit>
+                  <Box
                     sx={{
-                      bgcolor: "#2196f3", // Standard blue
-                      "&:hover": { bgcolor: "#1976d2" }, // Slightly darker blue on hover
-                      color: "white",
+                      padding: 2,
+                      backgroundColor: "#333",
+                      borderRadius: 1,
+                      marginBottom: 1,
                     }}
                   >
-                    Read More
-                  </Button>
-                </CardActions>
-                <Divider sx={{ bgcolor: "#333" }} /> {/* Darker divider */}
-                <CardContent>
-                  <Typography variant="h6" component="h4" gutterBottom color="white">
-                    Comments
-                  </Typography>
-                  {post.comments && post.comments.length > 0 ? (
-                    post.comments.map((comment) => (
-                      <Box
-                        key={comment._id}
-                        sx={{
-                          display: "flex",
-                          alignItems: "flex-start",
-                          p: 2,
-                          mb: 2,
-                          bgcolor: "#282828", // Darker comment background
-                          borderRadius: 1,
-                        }}
-                      >
-                        <Avatar sx={{ width: 36, height: 36, mr: 2, mt: 0.5, bgcolor: "#3f3f3f" }} /> {/* Slightly lighter avatar background */}
-                        <Box>
-                          <Typography variant="body2" fontWeight="bold" color="gray.300">
-                            {comment.author}
-                          </Typography>
-                          <Typography variant="body2" color="#c5c8ce"> {/* Lighter gray for comment text */}
-                            {comment.text}
+                    <Typography variant="body1" paragraph>
+                      {post.content}
+                    </Typography>
+                    <Typography variant="body2" color="gray">
+                      <strong>Tags:</strong> {post.tags.join(", ")}
+                    </Typography>
+
+                    {/* Comments Section */}
+                    <Typography variant="h6" sx={{ marginTop: 2 }}>
+                      Comments
+                    </Typography>
+                    {post.comments && post.comments.length > 0 ? (
+                      post.comments.map((comment) => (
+                        <Box
+                          key={comment._id}
+                          sx={{
+                            padding: 1,
+                            backgroundColor: "#444",
+                            marginBottom: 1,
+                            borderRadius: 1,
+                            boxShadow: 1,
+                          }}
+                        >
+                          <Typography variant="body2">
+                            <strong>{comment.author}</strong>: {comment.text}
                           </Typography>
                         </Box>
-                      </Box>
-                    ))
-                  ) : (
-                    <Typography variant="body2" color="gray">
-                      No comments yet.
-                    </Typography>
-                  )}
-                </CardContent>
-              </Card>
+                      ))
+                    ) : (
+                      <Typography variant="body2" color="gray">
+                        No comments yet.
+                      </Typography>
+                    )}
+                    <TextField
+                      fullWidth
+                      size="small"
+                      variant="outlined"
+                      placeholder="Add a comment..."
+                      value={commentData[post._id] || ""}
+                      onChange={(e) => handleCommentChange(post._id, e.target.value)}
+                      sx={{ marginTop: 2, backgroundColor: "#555", borderRadius: 1 }}
+                      InputProps={{ sx: { color: "white" } }}
+                    />
+                    <Button
+                      size="small"
+                      variant="contained"
+                      sx={{ marginTop: 1, backgroundColor: "#1976d2" }}
+                      onClick={() => submitComment(post._id)}
+                    >
+                      Submit
+                    </Button>
+                  </Box>
+                </Collapse>
+              </div>
             ))}
-          </Box>
+          </List>
         )}
-      </Container>
+      </Box>
     </div>
   );
 };

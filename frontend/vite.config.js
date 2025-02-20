@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import path from 'path';
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
   server: {
@@ -15,6 +15,16 @@ export default defineConfig({
   resolve: {
     alias: {
       '@shardcn/ui': '/node_modules/@shardcn/ui',
+      'pdfjs-dist': path.resolve(__dirname, 'node_modules/pdfjs-dist'),
+    },
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'pdf.worker': ['pdfjs-dist/build/pdf.worker.mjs'],
+        },
+      },
     },
   },
 });
