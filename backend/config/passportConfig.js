@@ -1,25 +1,25 @@
-// config/passport.js
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { Strategy as GitHubStrategy } from "passport-github2";
-import User from "../models/UserModel.js";
 import dotenv from "dotenv";
+import User from "../models/UserModel.js";
 
 dotenv.config();
 
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
+// Serialize User
+passport.serializeUser((user, done) => done(null, user.id));
 
+// Deserialize User
 passport.deserializeUser(async (id, done) => {
   try {
     const user = await User.findById(id);
     done(null, user);
   } catch (error) {
-    done(error);
+    done(error, null);
   }
 });
 
+// Google Strategy
 passport.use(
   new GoogleStrategy(
     {
@@ -28,21 +28,20 @@ passport.use(
       callbackURL: "/api/auth/google/callback",
     },
     async (accessToken, refreshToken, profile, done) => {
-      // ... (Google Strategy code)
       try {
         const email = profile.emails?.[0]?.value;
-        if (!email) {
-          return done(new Error("No email found from Google profile"), null);
-        }
+        if (!email) return done(new Error("No email found"), null);
+
         let user = await User.findOne({ email });
+
         if (!user) {
           user = await User.create({
-            username: profile.displayName || `${profile.name?.givenName} ${profile.name?.familyName}` || "Unknown User",
+            username: profile.displayName || "Google User",
             email,
-            password: null,
             accessToken,
-            refreshToken: refreshToken || null,
+            refreshToken,
             authMethod: "Google",
+            profilePic: profile.photos[0].value,
           });
         } else {
           user.accessToken = accessToken;
@@ -50,14 +49,16 @@ passport.use(
           user.authMethod = "Google";
           await user.save();
         }
+
         done(null, user);
       } catch (error) {
-        done(error);
+        done(error, null);
       }
     }
   )
 );
 
+// GitHub Strategy
 passport.use(
   new GitHubStrategy(
     {
@@ -66,18 +67,19 @@ passport.use(
       callbackURL: "/api/auth/github/callback",
     },
     async (accessToken, refreshToken, profile, done) => {
-      // ... (GitHub Strategy code)
       try {
-        let email = profile.emails?.[0]?.value || `github_${profile.id}@noemail.com`;
+        const email = profile.emails?.[0]?.value || `github_${profile.id}@noemail.com`;
+
         let user = await User.findOne({ email });
+
         if (!user) {
           user = await User.create({
-            username: profile.displayName || profile.username || "Unknown User",
+            username: profile.username || "GitHub User",
             email,
-            password: null,
             accessToken,
-            refreshToken: refreshToken || null,
+            refreshToken,
             authMethod: "GitHub",
+            profilePic: profile.photos[0]?.value || "",
           });
         } else {
           user.accessToken = accessToken;
@@ -85,9 +87,10 @@ passport.use(
           user.authMethod = "GitHub";
           await user.save();
         }
+
         done(null, user);
       } catch (error) {
-        done(error);
+        done(error, null);
       }
     }
   )
