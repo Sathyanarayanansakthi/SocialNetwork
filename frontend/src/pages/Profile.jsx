@@ -1,17 +1,31 @@
 import React, { useState } from "react";
-import { Dialog } from "@headlessui/react";
-import { Pencil, X, Camera } from "lucide-react";
+import {
+  Avatar,
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  TextField,
+  Typography,
+  Grid,
+  Paper,
+} from "@mui/material";
+import { Edit, Close, CameraAlt } from "@mui/icons-material";
 
 const Profile = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [profile, setProfile] = useState({
     name: "John Doe",
     username: "@johndoe",
-    bio: "Passionate Developer | Tech Enthusiast | Speaker",
-    description: "Building software solutions that matter. Open source enthusiast and community contributor.",
-    authMethod: "Google",
-    profilePic: "https://via.placeholder.com/150"
+    bio: "Tech Enthusiast | Collaborator | Event Organizer",
+    description:
+      "Passionate about building meaningful software solutions and collaborating with others.",
+    profilePic: "https://via.placeholder.com/150",
   });
+
   const [formData, setFormData] = useState({ ...profile });
   const [newProfilePic, setNewProfilePic] = useState(null);
 
@@ -36,53 +50,150 @@ const Profile = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-6 text-white bg-gradient-to-br from-gray-900 via-gray-800 to-black">
-      <div className="relative w-full max-w-3xl p-6 overflow-hidden bg-white shadow-2xl bg-opacity-10 backdrop-blur-md rounded-2xl">
-        {/* Cover Section */}
-        <div className="relative h-48 overflow-hidden bg-gradient-to-r from-indigo-700 to-purple-800 rounded-xl">
-          <div className="absolute left-6 bottom-[-50px] w-28 h-28 rounded-full border-4 border-gray-800 overflow-hidden group">
-            <img src={profile.profilePic} alt="Profile" className="object-cover w-full h-full" />
-            <label className="absolute inset-0 flex items-center justify-center transition bg-black bg-opacity-50 opacity-0 cursor-pointer group-hover:opacity-100">
-              <Camera className="w-6 h-6 text-white" />
-              <input type="file" className="hidden" onChange={handleProfilePicChange} />
-            </label>
-          </div>
-          <button className="absolute p-2 transition bg-black bg-opacity-50 rounded-full top-4 right-4 hover:bg-opacity-75" onClick={() => setIsOpen(true)}>
-            <Pencil className="w-5 h-5 text-white" />
-          </button>
-        </div>
+    <Box sx={{ backgroundColor: "#0d1117", minHeight: "100vh", p: 4 }}>
+      <Paper
+        elevation={3}
+        sx={{
+          p: 4,
+          background: "linear-gradient(135deg, #1f2937 30%, #111827 90%)",
+          borderRadius: 3,
+          color: "#e5e7eb",
+        }}
+      >
+        {/* Profile Picture & Edit */}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
+          <Box sx={{ position: "relative" }}>
+            <Avatar
+              src={profile.profilePic}
+              alt="Profile Picture"
+              sx={{ width: 100, height: 100, border: "3px solid #6366f1" }}
+            />
+            <IconButton
+              sx={{
+                position: "absolute",
+                bottom: 0,
+                right: 0,
+                backgroundColor: "#6366f1",
+                color: "#fff",
+                '&:hover': { backgroundColor: "#4f46e5" }
+              }}
+              component="label"
+            >
+              <CameraAlt />
+              <input type="file" hidden onChange={handleProfilePicChange} />
+            </IconButton>
+          </Box>
 
-        {/* Profile Details */}
-        <div className="p-6 pt-12 text-center">
-          <h2 className="text-3xl font-semibold">{profile.name}</h2>
-          <p className="text-sm text-gray-400">{profile.username}</p>
-          <p className="mt-2 text-gray-300">{profile.bio}</p>
-          <p className="mt-2 text-gray-400">Signed in with: {profile.authMethod}</p>
-          <p className="mt-4 text-sm italic text-gray-400">{profile.description}</p>
-        </div>
+          {/* User Info */}
+          <Box>
+            <Typography variant="h5" fontWeight="bold" color="#f3f4f6">
+              {profile.name}
+            </Typography>
+            <Typography variant="subtitle1" color="#9ca3af">
+              {profile.username}
+            </Typography>
+            <Typography variant="body2" mt={1} color="#d1d5db">
+              {profile.bio}
+            </Typography>
+            <Button
+              variant="outlined"
+              startIcon={<Edit />}
+              sx={{
+                mt: 2,
+                color: "#6366f1",
+                borderColor: "#6366f1",
+                '&:hover': { backgroundColor: "#4f46e5", color: "#fff" }
+              }}
+              onClick={() => setIsOpen(true)}
+            >
+              Edit Profile
+            </Button>
+          </Box>
+        </Box>
 
-        {/* Edit Profile Modal */}
-        <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
-          <div className="fixed inset-0 flex items-center justify-center p-4 bg-black bg-opacity-50">
-            <div className="w-full max-w-md p-6 bg-gray-900 rounded-lg shadow-xl">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold">Edit Profile</h2>
-                <button onClick={() => setIsOpen(false)}>
-                  <X className="w-5 h-5 text-gray-400" />
-                </button>
-              </div>
-              <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Full Name" className="w-full p-2 mb-3 text-white bg-gray-800 border border-gray-700 rounded-lg" />
-              <input type="text" name="username" value={formData.username} onChange={handleChange} placeholder="Username" className="w-full p-2 mb-3 text-white bg-gray-800 border border-gray-700 rounded-lg" />
-              <textarea name="bio" value={formData.bio} onChange={handleChange} placeholder="Bio" className="w-full p-2 mb-3 text-white bg-gray-800 border border-gray-700 rounded-lg" />
-              <textarea name="description" value={formData.description} onChange={handleChange} placeholder="Description" className="w-full p-2 mb-3 text-white bg-gray-800 border border-gray-700 rounded-lg" />
-              <button onClick={handleSubmit} className="w-full px-5 py-2 font-medium text-white transition bg-indigo-600 rounded-lg hover:bg-indigo-700">Save Changes</button>
-            </div>
-          </div>
+        {/* Profile Stats Section */}
+        <Grid container spacing={3} mt={4}>
+          {[
+            { label: "Collaborations", count: 10 },
+            { label: "Events Joined", count: 5 },
+            { label: "Blogs Written", count: 12 },
+            { label: "Forum Posts", count: 20 },
+            { label: "Patterns Shared", count: 7 },
+            { label: "Papers Submitted", count: 3 },
+          ].map((stat, idx) => (
+            <Grid item xs={6} sm={4} key={idx}>
+              <Typography variant="h6" color="#93c5fd">
+                {stat.label}
+              </Typography>
+              <Typography color="#bfdbfe">{stat.count}</Typography>
+            </Grid>
+          ))}
+        </Grid>
+
+        {/* Quick Navigation Section */}
+        <Box mt={4} display="flex" flexWrap="wrap" gap={2}>
+          {[
+            "Go to Collaboration",
+            "View Events",
+            "My Blogs",
+            "Forum Activity",
+            "Pattern Library",
+            "Research Papers",
+          ].map((btn, idx) => (
+            <Button
+              key={idx}
+              variant="contained"
+              sx={{
+                backgroundColor: "#6366f1",
+                '&:hover': { backgroundColor: "#4f46e5" },
+              }}
+            >
+              {btn}
+            </Button>
+          ))}
+        </Box>
+
+        {/* Edit Profile Dialog */}
+        <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
+          <DialogTitle>Edit Profile</DialogTitle>
+          <IconButton
+            sx={{ position: "absolute", top: 10, right: 10 }}
+            onClick={() => setIsOpen(false)}
+          >
+            <Close />
+          </IconButton>
+          <DialogContent>
+            {[
+              { label: "Full Name", name: "name", rows: 1 },
+              { label: "Username", name: "username", rows: 1 },
+              { label: "Bio", name: "bio", rows: 3 },
+              { label: "Description", name: "description", rows: 4 },
+            ].map((field, idx) => (
+              <TextField
+                key={idx}
+                fullWidth
+                margin="normal"
+                label={field.label}
+                name={field.name}
+                value={formData[field.name]}
+                onChange={handleChange}
+                multiline={field.rows > 1}
+                rows={field.rows}
+              />
+            ))}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setIsOpen(false)} color="error">
+              Cancel
+            </Button>
+            <Button onClick={handleSubmit} variant="contained" color="primary">
+              Save Changes
+            </Button>
+          </DialogActions>
         </Dialog>
-      </div>
-    </div>
+      </Paper>
+    </Box>
   );
 };
 
 export default Profile;
-  

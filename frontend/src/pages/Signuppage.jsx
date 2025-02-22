@@ -13,6 +13,8 @@ import {
   Stack,
   Alert,
   Box,
+  Divider,
+  IconButton,
 } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -32,7 +34,6 @@ function Signuppage({ open, handleClose }) {
         email,
         password,
       });
-
       toast.success('Registration successful! Redirecting...');
       setTimeout(() => {
         handleClose();
@@ -45,36 +46,115 @@ function Signuppage({ open, handleClose }) {
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="xs" fullWidth>
-      <DialogTitle textAlign="center">Create an Account</DialogTitle>
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      maxWidth="xs"
+      fullWidth
+      PaperProps={{
+        sx: {
+          p: 3,
+          borderRadius: 4,
+          boxShadow: '0 8px 24px rgba(0, 0, 0, 0.2)',
+          background: 'linear-gradient(135deg, #1e1e1e, #2b2b2b)',
+          color: '#fff',
+        },
+      }}
+    >
+      <DialogTitle textAlign="center" sx={{ fontWeight: 'bold', fontSize: '1.5rem' }}>
+        Create an Account
+      </DialogTitle>
       <DialogContent>
-        {errorMessage && <Alert severity="error" sx={{ mb: 2 }}>{errorMessage}</Alert>}
+        {errorMessage && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {errorMessage}
+          </Alert>
+        )}
         <Box component="form" onSubmit={registerUser} noValidate>
-          <Stack spacing={2}>
-            <TextField label="Username" value={username} onChange={(e) => setUsername(e.target.value)} fullWidth required />
-            <TextField label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} fullWidth required />
-            <TextField label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} fullWidth required />
+          <Stack spacing={3}>
+            <TextField
+              label="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              fullWidth
+              required
+              variant="filled"
+              sx={{ input: { color: 'white' } }}
+            />
+            <TextField
+              label="Email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              fullWidth
+              required
+              variant="filled"
+              sx={{ input: { color: 'white' } }}
+            />
+            <TextField
+              label="Password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              fullWidth
+              required
+              variant="filled"
+              sx={{ input: { color: 'white' } }}
+            />
           </Stack>
         </Box>
       </DialogContent>
-      <DialogActions sx={{ justifyContent: 'center' }}>
-        <Stack spacing={2} width="100%">
-          <Button type="submit" variant="contained" color="primary" fullWidth onClick={registerUser}>
-            Sign Up
+      <DialogActions sx={{ justifyContent: 'center', flexDirection: 'column', gap: 2 }}>
+        <Button
+          type="submit"
+          variant="contained"
+          fullWidth
+          onClick={registerUser}
+          sx={{
+            background: 'linear-gradient(135deg, #6e8efb, #a777e3)',
+            color: '#fff',
+            borderRadius: 2,
+            boxShadow: '0 4px 12px rgba(110, 142, 251, 0.4)',
+            '&:hover': {
+              background: 'linear-gradient(135deg, #5a7ce0, #9267d6)',
+            },
+          }}
+        >
+          Sign Up
+        </Button>
+        <Divider sx={{ color: 'gray', width: '100%' }}>OR</Divider>
+        <Button
+          variant="contained"
+          startIcon={<GoogleIcon />}
+          fullWidth
+          sx={{
+            bgcolor: '#DB4437',
+            color: 'white',
+            '&:hover': { bgcolor: '#c1351d' },
+          }}
+        >
+          Sign Up with Google
+        </Button>
+        <Button
+          variant="contained"
+          startIcon={<GitHubIcon />}
+          fullWidth
+          sx={{
+            bgcolor: '#24292e',
+            color: 'white',
+            '&:hover': { bgcolor: '#1b1f23' },
+          }}
+        >
+          Sign Up with GitHub
+        </Button>
+        <Typography variant="body2" textAlign="center" mt={2}>
+          Already have an account?{' '}
+          <Button color="secondary" onClick={handleClose} sx={{ textTransform: 'none' }}>
+            Sign In
           </Button>
-          <Button variant="contained" startIcon={<GoogleIcon />} fullWidth sx={{ bgcolor: 'red', color: 'white' }}>
-            Sign Up with Google
-          </Button>
-          <Button variant="contained" startIcon={<GitHubIcon />} fullWidth sx={{ bgcolor: 'black', color: 'white' }}>
-            Sign Up with GitHub
-          </Button>
-          <Typography variant="body2" textAlign="center">
-            Already have an account?{' '}
-            <Button color="primary" onClick={handleClose}>Sign In</Button>
-          </Typography>
-        </Stack>
+        </Typography>
       </DialogActions>
-      <ToastContainer position="top-center" autoClose={3000} hideProgressBar={false} />
+      <ToastContainer position="top-center" autoClose={3000} hideProgressBar={false} theme="dark" />
     </Dialog>
   );
 }
