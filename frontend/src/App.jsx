@@ -16,6 +16,8 @@ import Pattern from "./pages/Pattern";
 import EventForm from "./components/Event/EventForm";
 import PatternForm from "./components/Pattern/PattenForm";
 import PatternRules from './components/Pattern/PatternRules'
+import EventDetails from "./components/Event/EventDetail";
+
 function App() {
   return (
     <Router>
@@ -30,14 +32,15 @@ function App() {
           <Route path="/create" element={<BlogForm />} />
           <Route path="/forumcreation" element={<ForumCreation />} />
           <Route path="/collab" element={<Collab />} />
-          <Route path="/collabform" element={<Collabform />} /> {/* Fixed Path */}
+          <Route path="/collabform" element={<Collabform />} /> 
           <Route path="/event" element={<Event />} />
+          <Route path="/event/:eventId" element={<EventDetails />} /> {/* Add this route */}
           <Route path="/profile" element={<Profile />} />
           <Route path="/paper" element={<Paper />} />
           <Route path="/pattern" element={<Pattern />} />
           <Route path="/eventform" element={<EventForm />} />
           <Route path="/patternrules" element={<PatternRules />} />
-          <Route path="/patternform" element={<PatternForm />} /> {/* Fixed Path */}
+          <Route path="/patternform" element={<PatternForm />} /> 
         </Routes>
       </div>
     </Router>

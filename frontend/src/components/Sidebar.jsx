@@ -37,7 +37,7 @@ const Sidebar = () => {
     { text: "Collaboration", icon: <FaCogs />, path: "/collab" },
     { text: "Profile", icon: <FaUser />, path: "/profile" },
     { text: "Blog", icon: <FaBlog />, path: "/blog" },
-    { text: "Paper", icon: <FaNewspaper />, path: "/paper" },
+    // { text: "Paper", icon: <FaNewspaper />, path: "/paper" },
   ];
 
   return (

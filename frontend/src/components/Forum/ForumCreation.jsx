@@ -1,3 +1,4 @@
+// ForumCreation.js
 import React, { useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -71,13 +72,12 @@ const ForumCreation = ({ open, handleClose }) => {
       const response = await axios.post("http://localhost:5000/api/posts", postData);
       console.log("Post created successfully:", response.data);
       handleClose();
-      setTitle(""); // Clear form fields after successful submission
+      setTitle("");
       setContent("");
       setTags([]);
       setManualTags("");
     } catch (error) {
       console.error("Error creating post:", error);
-      // Handle error, e.g., display a snackbar message
     }
   };
 

@@ -7,7 +7,14 @@ const eventSchema = new mongoose.Schema(
     location: { type: String, required: true },
     collegeName: { type: String, required: true },
     eventDescription: { type: String, required: true },
-    poster: { type: String }, // Optional field
+    poster: { type: String }, // Stores the file name
+    contactDetails: [
+      {
+        type: { type: String, required: true }, // e.g., email, phoneNumber, website
+        value: { type: String, required: true }, // e.g., example@example.com, +1234567890
+      },
+    ],
+    registrationLink: { type: String },
   },
   { timestamps: true }
 );

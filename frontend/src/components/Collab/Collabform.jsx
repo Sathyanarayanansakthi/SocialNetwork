@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { TextField, Button, Typography, Divider, Chip } from "@mui/material";
+import { TextField, Button, Typography, Divider } from "@mui/material";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
@@ -62,16 +62,16 @@ const CollabForm = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white">
-      <div className="w-full max-w-2xl bg-black bg-opacity-30 backdrop-blur-md shadow-md rounded-xl p-8">
+    <div className="flex items-center justify-center min-h-screen text-white bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900">
+      <div className="w-full max-w-2xl p-8 bg-black shadow-md bg-opacity-30 backdrop-blur-md rounded-xl">
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-          <Typography variant="h4" className="text-blue-400 font-semibold text-center mb-4">
+          <Typography variant="h4" className="mb-4 font-semibold text-center text-blue-400">
             Collaboration Form
           </Typography>
         </motion.div>
         <Divider className="mb-6 border-gray-700" />
         <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {["title", "name", "location"].map((field, index) => (
               <motion.div key={field} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: index * 0.2 }}>
                 <TextField
@@ -82,7 +82,7 @@ const CollabForm = () => {
                   onChange={handleChange}
                   name={field}
                   required
-                  className="bg-white bg-opacity-10 backdrop-blur-lg rounded-md"
+                  className="bg-white rounded-md bg-opacity-10 backdrop-blur-lg"
                   InputLabelProps={{ className: "text-gray-300" }}
                   InputProps={{
                     style: { color: "white" },
@@ -103,7 +103,7 @@ const CollabForm = () => {
               onChange={handleChange}
               name="description"
               required
-              className="bg-white bg-opacity-10 backdrop-blur-lg rounded-md"
+              className="bg-white rounded-md bg-opacity-10 backdrop-blur-lg"
               InputLabelProps={{ className: "text-gray-300" }}
               InputProps={{
                 style: { color: "white" },
@@ -112,7 +112,7 @@ const CollabForm = () => {
             />
           </motion.div>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.6 }} className="mt-4">
-            <Typography variant="subtitle1" className="font-semibold text-gray-300 mb-2">
+            <Typography variant="subtitle1" className="mb-2 font-semibold text-gray-300">
               Skills Required
             </Typography>
             <Select
@@ -123,9 +123,9 @@ const CollabForm = () => {
               placeholder="Select skills..."
               closeMenuOnSelect={false}
               isSearchable
-              className="bg-white bg-opacity-10 backdrop-blur-lg rounded-md text-white"
+              className="text-white bg-white rounded-md bg-opacity-10 backdrop-blur-lg"
               styles={{
-                control: (base) => ({ ...base, backgroundColor: "rgba(255, 255, 255, 0.1)", backdropFilter: "blur(10px)" }),
+                control: (base) => ({ ...base, backgroundColor: "rgba(255, 255, 255, 0)", backdropFilter: "blur(10px)" }),
                 menu: (base) => ({ ...base, backgroundColor: "rgba(255, 255, 255, 0.1)", backdropFilter: "blur(10px)" }),
                 multiValue: (base) => ({ ...base, backgroundColor: "#2563eb", color: "white" }),
                 multiValueLabel: (base) => ({ ...base, color: "white" }),
@@ -134,12 +134,12 @@ const CollabForm = () => {
           </motion.div>
           <div className="flex justify-between mt-6">
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button type="submit" variant="contained" className="bg-blue-500 hover:bg-blue-600 text-white" disabled={loading}>
+              <Button type="submit" variant="contained" className="text-white bg-blue-500 hover:bg-blue-600" disabled={loading}>
                 {loading ? "Submitting..." : "Post Job"}
               </Button>
             </motion.div>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button onClick={() => navigate(-1)} variant="outlined" className="border-blue-400 text-blue-400">
+              <Button onClick={() => navigate(-1)} variant="outlined" className="text-blue-400 border-blue-400">
                 Back
               </Button>
             </motion.div>

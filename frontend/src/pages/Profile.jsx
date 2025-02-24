@@ -1,33 +1,55 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import {
-  Avatar,
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  TextField,
-  Typography,
-  Grid,
-  Paper,
+  Avatar,Box, Button,Dialog,DialogActions,DialogContent,DialogTitle,IconButton,TextField,Typography,Paper,Grid
 } from "@mui/material";
 import { Edit, Close, CameraAlt } from "@mui/icons-material";
+import axios from "axios";
 
 const Profile = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [profile, setProfile] = useState({
-    name: "John Doe",
-    username: "@johndoe",
-    bio: "Tech Enthusiast | Collaborator | Event Organizer",
-    description:
-      "Passionate about building meaningful software solutions and collaborating with others.",
+    name: "",
+    username: "",
+    bio: "",
+    description: "",
     profilePic: "https://via.placeholder.com/150",
+    loginMethod: "",
   });
 
   const [formData, setFormData] = useState({ ...profile });
   const [newProfilePic, setNewProfilePic] = useState(null);
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get("/api/auth/profile", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const userData = response.data;
+        setProfile({
+          name: userData.username,
+          username: userData.username,
+          bio: userData.bio || "",
+          description: userData.description || "",
+          profilePic: userData.profilePic || "https://via.placeholder.com/150",
+          loginMethod: userData.authMethod,
+        });
+        setFormData({
+          name: userData.username,
+          username: userData.username,
+          bio: userData.bio || "",
+          description: userData.description || "",
+        });
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -44,9 +66,29 @@ const Profile = () => {
     }
   };
 
-  const handleSubmit = () => {
-    setProfile({ ...formData, profilePic: newProfilePic || profile.profilePic });
-    setIsOpen(false);
+  const handleSubmit = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const updatedProfile = {
+        ...formData,
+        profilePic: newProfilePic || profile.profilePic,
+      };
+
+      await axios.put("/api/auth/profile", updatedProfile, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setProfile((prevProfile) => ({
+        ...prevProfile,
+        ...formData,
+        profilePic: newProfilePic || prevProfile.profilePic,
+      }));
+      setIsOpen(false);
+    } catch (error) {
+      console.error("Error updating profile:", error);
+    }
   };
 
   return (
@@ -60,7 +102,6 @@ const Profile = () => {
           color: "#e5e7eb",
         }}
       >
-        {/* Profile Picture & Edit */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
           <Box sx={{ position: "relative" }}>
             <Avatar
@@ -75,7 +116,7 @@ const Profile = () => {
                 right: 0,
                 backgroundColor: "#6366f1",
                 color: "#fff",
-                '&:hover': { backgroundColor: "#4f46e5" }
+                "&:hover": { backgroundColor: "#4f46e5" },
               }}
               component="label"
             >
@@ -84,7 +125,6 @@ const Profile = () => {
             </IconButton>
           </Box>
 
-          {/* User Info */}
           <Box>
             <Typography variant="h5" fontWeight="bold" color="#f3f4f6">
               {profile.name}
@@ -95,6 +135,9 @@ const Profile = () => {
             <Typography variant="body2" mt={1} color="#d1d5db">
               {profile.bio}
             </Typography>
+            <Typography variant="body2" mt={1} color="#93c5fd">
+              Logged in via {profile.loginMethod}
+            </Typography>
             <Button
               variant="outlined"
               startIcon={<Edit />}
@@ -102,7 +145,7 @@ const Profile = () => {
                 mt: 2,
                 color: "#6366f1",
                 borderColor: "#6366f1",
-                '&:hover': { backgroundColor: "#4f46e5", color: "#fff" }
+                "&:hover": { backgroundColor: "#4f46e5", color: "#fff" },
               }}
               onClick={() => setIsOpen(true)}
             >
@@ -111,7 +154,6 @@ const Profile = () => {
           </Box>
         </Box>
 
-        {/* Profile Stats Section */}
         <Grid container spacing={3} mt={4}>
           {[
             { label: "Collaborations", count: 10 },
@@ -130,7 +172,6 @@ const Profile = () => {
           ))}
         </Grid>
 
-        {/* Quick Navigation Section */}
         <Box mt={4} display="flex" flexWrap="wrap" gap={2}>
           {[
             "Go to Collaboration",
@@ -145,7 +186,7 @@ const Profile = () => {
               variant="contained"
               sx={{
                 backgroundColor: "#6366f1",
-                '&:hover': { backgroundColor: "#4f46e5" },
+                "&:hover": { backgroundColor: "#4f46e5" },
               }}
             >
               {btn}
@@ -153,7 +194,6 @@ const Profile = () => {
           ))}
         </Box>
 
-        {/* Edit Profile Dialog */}
         <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
           <DialogTitle>Edit Profile</DialogTitle>
           <IconButton

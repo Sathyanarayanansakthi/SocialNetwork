@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { Button } from "@mui/material";
-import ForumCreation from "./ForumCreation"; // Import ForumCreation
+import { useState } from 'react';
+import { Button } from '@mui/material';
+import ForumCreation from './ForumCreation'; // Import the ForumCreation component
 
 const ForumNavbar = () => {
   const [open, setOpen] = useState(false); // State to control popup visibility
@@ -12,8 +12,12 @@ const ForumNavbar = () => {
         <Button
           variant="contained"
           color="secondary"
-          onClick={() => setOpen(true)}
-          sx={{ backgroundColor: "white", color: "black", "&:hover": { backgroundColor: "lightgray" } }}
+          onClick={() => setOpen(true)} // Open the popup
+          sx={{
+            backgroundColor: 'white',
+            color: 'black',
+            '&:hover': { backgroundColor: 'lightgray' },
+          }}
         >
           Create a Forum
         </Button>
