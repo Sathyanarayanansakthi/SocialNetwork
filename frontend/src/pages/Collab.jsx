@@ -1,167 +1,105 @@
-import { useState, useEffect } from "react";
+// Collab.jsx (Frontend Component)
+import { useEffect, useState } from "react";
+import CollabNav from "../components/Collab/CollabNav";
 import axios from "axios";
-import ForumNavbar from "../components/Forum/ForumNavbar";
 import { motion } from "framer-motion";
-import { ExpandLess, ExpandMore } from "@mui/icons-material";
+import { toast } from "react-toastify";
 
-const Forum = () => {
-  const [posts, setPosts] = useState([]);
+const Collab = () => {
+  const [collabs, setCollabs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [expanded, setExpanded] = useState(null);
-  const [commentData, setCommentData] = useState({});
+  const [expanded, setExpanded] = useState({});
 
   useEffect(() => {
-    const fetchPosts = async () => {
+    const fetchCollabs = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/posts");
-        setPosts(response.data);
-      } catch (err) {
-        setError("Error fetching posts.");
+        const response = await axios.get("http://localhost:5000/api/collab");
+        setCollabs(response.data);
+      } catch (error) {
+        setError("Error fetching collaborations. Please try again later.");
+        console.error("Error fetching collaborations:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchPosts();
+    fetchCollabs();
   }, []);
 
-  const handleExpand = (postId) => {
-    setExpanded(expanded === postId ? null : postId);
+  const toggleExpand = (id) => {
+    setExpanded((prevState) => ({ ...prevState, [id]: !prevState[id] }));
   };
 
-  const handleCommentChange = (postId, value) => {
-    setCommentData((prev) => ({ ...prev, [postId]: value }));
+  const handleShare = (id) => {
+    const shareableLink = `${window.location.origin}/collab/${id}`;
+    navigator.clipboard.writeText(shareableLink);
+    toast.success("Link copied to clipboard!", {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      theme: "light",
+    });
   };
 
-  const submitComment = async (postId) => {
-    try {
-      await axios.post(`http://localhost:5000/api/posts/${postId}/comments`, {
-        author: "Anonymous",
-        text: commentData[postId] || "",
-      });
-      setCommentData((prev) => ({ ...prev, [postId]: "" }));
-      const response = await axios.get("http://localhost:5000/api/posts");
-      setPosts(response.data);
-    } catch (error) {
-      alert("Error adding comment.");
-    }
-  };
-
-  if (loading)
+  if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen bg-black">
-        <motion.div
-          className="w-16 h-16 border-t-4 border-indigo-500 rounded-full animate-spin"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        ></motion.div>
+      <div className="flex items-center justify-center h-screen">
+        <div className="w-16 h-16 border-t-4 border-indigo-500 rounded-full animate-spin"></div>
       </div>
     );
+  }
 
-  if (error)
-    return (
-      <div className="mt-10 text-center text-red-500">{error}</div>
-    );
+  if (error) {
+    return <div className="mt-6 text-center text-red-500">{error}</div>;
+  }
 
   return (
-    <div className="min-h-screen text-white bg-black">
-      <ForumNavbar />
-      <div className="max-w-4xl p-6 mx-auto">
-        <h1 className="mb-8 text-3xl font-bold text-center text-indigo-400">
-          Forum Posts
-        </h1>
-
-        {posts.length === 0 ? (
-          <p className="text-center text-gray-500">No posts available.</p>
-        ) : (
-          <div className="space-y-6">
-            {posts.map((post) => (
-              <motion.div
-                key={post._id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-                whileHover={{ scale: 1.01 }}
-                className={`p-5 bg-gray-900 bg-opacity-50 backdrop-blur-lg rounded-2xl shadow-lg hover:shadow-xl transition duration-300 ${
-                  expanded === post._id ? "ring-2 ring-indigo-400" : ""
-                }`}
-              >
-                <button
-                  onClick={() => handleExpand(post._id)}
-                  className="flex items-center justify-between w-full text-left"
-                >
-                  <h2 className="text-xl font-semibold text-indigo-400">
-                    {post.title}
-                  </h2>
-                  {expanded === post._id ? (
-                    <ExpandLess className="text-indigo-400" />
-                  ) : (
-                    <ExpandMore className="text-indigo-400" />
-                  )}
-                </button>
-
-                {expanded === post._id && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    transition={{ duration: 0.3 }}
-                    className="mt-4"
-                  >
-                    <p
-                      className="text-gray-300"
-                      dangerouslySetInnerHTML={{ __html: post.content }}
-                    />
-                    {/* Comments Section */}
-                    <h3 className="mt-4 text-lg font-medium text-indigo-400">
-                      Comments
-                    </h3>
-                    <div className="space-y-2">
-                      {post.comments && post.comments.length > 0 ? (
-                        post.comments.map((comment) => (
-                          <div
-                            key={comment._id}
-                            className="p-2 bg-gray-800 rounded-lg shadow-inner"
-                          >
-                            <p>
-                              <strong className="text-indigo-300">
-                                {comment.author}:
-                              </strong>{" "}
-                              {comment.text}
-                            </p>
-                          </div>
-                        ))
-                      ) : (
-                        <p className="text-gray-500">No comments yet.</p>
-                      )}
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
+      <CollabNav />
+      <div className="max-w-4xl pb-10 mx-auto mt-8">
+        <h1 className="mb-6 text-3xl font-bold text-center text-indigo-600">Explore Collaborations</h1>
+        <div className="space-y-6">
+          {collabs.map((collab) => (
+            <motion.div whileHover={{ scale: 1.02 }} key={collab._id}>
+              <div className="p-6 transition duration-300 bg-white border border-gray-200 shadow-md rounded-xl hover:shadow-lg">
+                <div className="flex items-start">
+                  <div className="flex-1">
+                    <h2 className="text-xl font-semibold text-indigo-800">{collab.title}</h2>
+                    <p className="text-sm text-gray-500">Published on: {new Date(collab.createdAt).toLocaleString()}</p>
+                    <p><strong>Name:</strong> {collab.name}</p>
+                    <p><strong>Location:</strong> {collab.location}</p>
+                    <p className="mt-2 text-gray-700">
+                      {expanded[collab._id] ? collab.description : `${collab.description.slice(0, 100)}...`}
+                    </p>
+                    <button onClick={() => toggleExpand(collab._id)} className="mt-2 text-indigo-600">
+                      {expanded[collab._id] ? "Read Less" : "Read More"}
+                    </button>
+                    <h3 className="mt-4 font-semibold text-gray-700">Skills Required:</h3>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {collab.skills.map((skill, index) => (
+                        <span key={index} className="px-3 py-1 text-sm text-white bg-indigo-600 rounded-full">
+                          {skill}
+                        </span>
+                      ))}
                     </div>
-                    <div className="flex flex-col gap-2 mt-3">
-                      <input
-                        type="text"
-                        placeholder="Add a comment..."
-                        value={commentData[post._id] || ""}
-                        onChange={(e) =>
-                          handleCommentChange(post._id, e.target.value)
-                        }
-                        className="w-full px-3 py-2 text-white bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                      />
-                      <button
-                        onClick={() => submitComment(post._id)}
-                        className="self-end px-4 py-2 transition bg-indigo-500 rounded-lg hover:bg-indigo-600"
-                      >
-                        Submit
+                    <div className="flex justify-end mt-4">
+                      <button onClick={() => handleShare(collab._id)} className="font-semibold text-indigo-600">
+                        Share
                       </button>
                     </div>
-                  </motion.div>
-                )}
-              </motion.div>
-            ))}
-          </div>
-        )}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
-export default Forum;
+export default Collab;
