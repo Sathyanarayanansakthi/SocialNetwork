@@ -1,102 +1,161 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState, useEffect } from "react";
+import axios from "axios";
 import {
-  Card,
-  CardContent,
+  List,
+  ListItem,
+  ListItemText,
+  Collapse,
   Typography,
+  TextField,
+  Button,
   Box,
-  Link,
-  CircularProgress,
-  Modal,
-} from '@mui/material';
+} from "@mui/material";
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
 
-const PatternCard = () => {
-  const [patterns, setPatterns] = useState([]);
+const ForumCard = () => {
+  const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [pdfUrl, setPdfUrl] = useState(null);
-  const [open, setOpen] = useState(false);
+  const [expanded, setExpanded] = useState(null);
+  const [commentData, setCommentData] = useState({});
 
   useEffect(() => {
-    const fetchPatterns = async () => {
+    const fetchPosts = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/patterns');
-        if (response.data && response.data.patterns) {
-          setPatterns(response.data.patterns);
-        } else {
-          setError('Unexpected data format from server.');
-        }
+        const response = await axios.get("http://localhost:5000/api/posts");
+        setPosts(response.data);
       } catch (err) {
-        setError('Failed to fetch patterns');
+        setError("Error fetching posts.");
       } finally {
         setLoading(false);
       }
     };
-    fetchPatterns();
+
+    fetchPosts();
   }, []);
 
-  const handleOpen = (url) => {
-    const fullUrl = `http://localhost:5000${url}`;
-    setPdfUrl(fullUrl);
-    setOpen(true);
+  const handleExpand = (postId) => {
+    setExpanded(expanded === postId ? null : postId);
   };
 
-  const handleClose = () => {
-    setOpen(false);
-    setPdfUrl(null);
+  const handleCommentChange = (postId, value) => {
+    setCommentData((prev) => ({ ...prev, [postId]: value }));
   };
 
-  if (loading) return <CircularProgress />;
-  if (error) return <Typography variant="body1" color="error">{error}</Typography>;
+  const submitComment = async (postId) => {
+    try {
+      await axios.post(`http://localhost:5000/api/posts/${postId}/comments`, {
+        author: "Anonymous",
+        text: commentData[postId] || "",
+      });
+      setCommentData((prev) => ({ ...prev, [postId]: "" }));
+
+      // Refresh posts to show new comments
+      const response = await axios.get("http://localhost:5000/api/posts");
+      setPosts(response.data);
+    } catch (error) {
+      alert("Error adding comment.");
+    }
+  };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
-    <div style={{ backgroundColor: '#121212', color: 'white', minHeight: '100vh' }}>
-      <Box sx={{ p: 5, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <Typography variant="h4" component="h2" gutterBottom sx={{ fontWeight: 'bold', mb: 4, color: 'white' }}>
-          Patterns
+    <div className="bg-gray-900 text-white min-h-screen">
+      <Box sx={{ maxWidth: 800, margin: "auto", padding: 3 }}>
+        <Typography variant="h4" gutterBottom>
+          Forum Posts
         </Typography>
-        <Box sx={{ width: '100%' }}>
-          {patterns.map((pattern) => (
-            <Card key={pattern._id} sx={{ mb: 2, backgroundColor: '#1e1e1e', color: 'white' }}>
-              <CardContent>
-                <Typography variant="h5" component="h3" sx={{ fontWeight: 'bold', color: 'white' }}>
-                  {pattern.name}
-                </Typography>
-                <Typography variant="body2" color="#9aa0a6">
-                  About: {pattern.about}
-                </Typography>
-                <Typography variant="body2" color="#9aa0a6">
-                  Guide: {pattern.guide}
-                </Typography>
-                <Typography variant="body2" color="#c5c8ce">
-                  Details: {pattern.patternDetails}
-                </Typography>
-              </CardContent>
-              <Box sx={{ p: 2, backgroundColor: '#282828' }}>
-                <Link onClick={() => handleOpen(pattern.fileUrl)} variant="body2" sx={{ color: '#2196f3', cursor: 'pointer' }}>
-                  View PDF
-                </Link>
-              </Box>
-            </Card>
-          ))}
-        </Box>
-      </Box>
+        {posts.length === 0 ? (
+          <Typography variant="h6" color="textSecondary">
+            No posts available.
+          </Typography>
+        ) : (
+          <List>
+            {posts.map((post) => (
+              <div key={post._id}>
+                <ListItem
+                  button
+                  onClick={() => handleExpand(post._id)}
+                  sx={{
+                    backgroundColor: "#222",
+                    borderRadius: 1,
+                    marginBottom: 1,
+                    boxShadow: 2,
+                  }}
+                >
+                  <ListItemText
+                    primary={<Typography variant="h6">{post.title}</Typography>}
+                  />
+                  {expanded === post._id ? <ExpandLess /> : <ExpandMore />}
+                </ListItem>
+                <Collapse in={expanded === post._id} timeout="auto" unmountOnExit>
+                  <Box
+                    sx={{
+                      padding: 2,
+                      backgroundColor: "#333",
+                      borderRadius: 1,
+                      marginBottom: 1,
+                    }}
+                  >
+                    <Typography variant="body1" paragraph>
+                      {post.content}
+                    </Typography>
 
-      <Modal open={open} onClose={handleClose}>
-        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '80%', height: '80vh', bgcolor: 'background.paper', boxShadow: 24, p: 1 }}>
-          {pdfUrl && (
-            <iframe
-              src={pdfUrl}
-              width="100%"
-              height="100%"
-              title="PDF Viewer"
-              style={{ border: 'none' }}
-            />
-          )}
-        </Box>
-      </Modal>
+                    {/* Comments Section */}
+                    <Typography variant="h6" sx={{ marginTop: 2 }}>
+                      Comments
+                    </Typography>
+                    {post.comments && post.comments.length > 0 ? (
+                      post.comments.map((comment) => (
+                        <Box
+                          key={comment._id}
+                          sx={{
+                            padding: 1,
+                            backgroundColor: "#444",
+                            marginBottom: 1,
+                            borderRadius: 1,
+                            boxShadow: 1,
+                          }}
+                        >
+                          <Typography variant="body2">
+                            <strong>{comment.author}</strong>: {comment.text}
+                          </Typography>
+                        </Box>
+                      ))
+                    ) : (
+                      <Typography variant="body2" color="gray">
+                        No comments yet.
+                      </Typography>
+                    )}
+                    <TextField
+                      fullWidth
+                      size="small"
+                      variant="outlined"
+                      placeholder="Add a comment..."
+                      value={commentData[post._id] || ""}
+                      onChange={(e) => handleCommentChange(post._id, e.target.value)}
+                      sx={{ marginTop: 2, backgroundColor: "#555", borderRadius: 1 }}
+                      InputProps={{ sx: { color: "white" } }}
+                    />
+                    <Button
+                      size="small"
+                      variant="contained"
+                      sx={{ marginTop: 1, backgroundColor: "#1976d2" }}
+                      onClick={() => submitComment(post._id)}
+                    >
+                      Submit
+                    </Button>
+                  </Box>
+                </Collapse>
+              </div>
+            ))}
+          </List>
+        )}
+      </Box>
     </div>
   );
 };
 
-export default PatternCard;
+export default ForumCard;

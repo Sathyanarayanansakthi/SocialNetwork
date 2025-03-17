@@ -6,13 +6,14 @@ import {
   CardContent,
   Typography,
   Box,
-  Link,
   CircularProgress,
   Modal,
   Grid,
   IconButton,
 } from "@mui/material";
 import { Description, Close } from "@mui/icons-material";
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const Pattern = () => {
   const [patterns, setPatterns] = useState([]);
@@ -24,12 +25,8 @@ const Pattern = () => {
   useEffect(() => {
     const fetchPatterns = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/patterns");
-        if (response.data && response.data.patterns) {
-          setPatterns(response.data.patterns);
-        } else {
-          setError("Unexpected data format from server.");
-        }
+        const response = await axios.get(`${API_URL}/api/patterns`);
+        setPatterns(response.data.patterns || []);
       } catch (err) {
         setError("Failed to fetch patterns");
       } finally {
@@ -40,8 +37,11 @@ const Pattern = () => {
   }, []);
 
   const handleOpen = (url) => {
-    const fullUrl = `http://localhost:5000${url}`;
-    setPdfUrl(fullUrl);
+    if (!url) {
+      setError("PDF URL is missing");
+      return;
+    }
+    setPdfUrl(`${API_URL}${url}`);
     setOpen(true);
   };
 
@@ -52,12 +52,7 @@ const Pattern = () => {
 
   if (loading) {
     return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        minHeight="100vh"
-      >
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
         <CircularProgress />
       </Box>
     );
@@ -65,12 +60,7 @@ const Pattern = () => {
 
   if (error) {
     return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        minHeight="100vh"
-      >
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
         <Typography variant="body1" color="error">
           {error}
         </Typography>
@@ -79,15 +69,10 @@ const Pattern = () => {
   }
 
   return (
-    <div style={{ backgroundColor: "#121212", color: "white", minHeight: "100vh" }}>
+    <div style={{ backgroundColor: "#f8f9fa", color: "black", minHeight: "100vh" }}>
       <PatternNav />
       <Box sx={{ p: 5 }}>
-        <Typography
-          variant="h4"
-          component="h2"
-          gutterBottom
-          sx={{ fontWeight: "bold", mb: 4, color: "white", textAlign: "center" }}
-        >
+        <Typography variant="h4" sx={{ fontWeight: "bold", mb: 4, textAlign: "center" }}>
           Patterns
         </Typography>
         <Grid container spacing={3}>
@@ -95,49 +80,34 @@ const Pattern = () => {
             <Grid item key={pattern._id} xs={12} sm={6} md={4}>
               <Card
                 sx={{
-                  backgroundColor: "#1e1e1e",
-                  color: "white",
+                  backgroundColor: "white",
+                  color: "black",
                   height: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between",
+                  borderRadius: "12px",
+                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
                   transition: "transform 0.2s, box-shadow 0.2s",
                   "&:hover": {
-                    transform: "scale(1.05)",
-                    boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
+                    transform: "translateY(-5px)",
+                    boxShadow: "0 6px 20px rgba(0, 0, 0, 0.15)",
                   },
                 }}
               >
                 <CardContent>
-                  <Typography
-                    variant="h5"
-                    component="h3"
-                    sx={{ fontWeight: "bold", color: "white", mb: 2 }}
-                  >
+                  <Typography variant="h5" sx={{ fontWeight: "bold", mb: 2 }}>
                     {pattern.name}
                   </Typography>
-                  <Typography variant="body2" color="#9aa0a6" sx={{ mb: 1 }}>
+                  <Typography variant="body2" sx={{ mb: 1 }}>
                     <strong>About:</strong> {pattern.about}
                   </Typography>
-                  <Typography variant="body2" color="#9aa0a6" sx={{ mb: 1 }}>
+                  <Typography variant="body2" sx={{ mb: 1 }}>
                     <strong>Guide:</strong> {pattern.guide}
                   </Typography>
-                  <Typography variant="body2" color="#c5c8ce">
+                  <Typography variant="body2">
                     <strong>Details:</strong> {pattern.patternDetails}
                   </Typography>
                 </CardContent>
-                <Box
-                  sx={{
-                    p: 2,
-                    backgroundColor: "#282828",
-                    display: "flex",
-                    justifyContent: "flex-end",
-                  }}
-                >
-                  <IconButton
-                    onClick={() => handleOpen(pattern.fileUrl)}
-                    sx={{ color: "#2196f3" }}
-                  >
+                <Box sx={{ p: 2, backgroundColor: "#f1f1f1", textAlign: "right" }}>
+                  <IconButton onClick={() => handleOpen(pattern.fileUrl)} sx={{ color: "#007BFF" }}>
                     <Description />
                   </IconButton>
                 </Box>
@@ -147,6 +117,7 @@ const Pattern = () => {
         </Grid>
       </Box>
 
+      {/* PDF Modal */}
       <Modal open={open} onClose={handleClose}>
         <Box
           sx={{
@@ -156,32 +127,24 @@ const Pattern = () => {
             transform: "translate(-50%, -50%)",
             width: "80%",
             height: "80vh",
-            bgcolor: "background.paper",
+            bgcolor: "white",
             boxShadow: 24,
-            p: 1,
             borderRadius: 2,
+            display: "flex",
+            flexDirection: "column",
           }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "flex-end",
-              p: 1,
-              backgroundColor: "#f5f5f5",
-            }}
-          >
+          <Box sx={{ display: "flex", justifyContent: "flex-end", p: 1, backgroundColor: "#eee" }}>
             <IconButton onClick={handleClose}>
               <Close />
             </IconButton>
           </Box>
-          {pdfUrl && (
-            <iframe
-              src={pdfUrl}
-              width="100%"
-              height="100%"
-              title="PDF Viewer"
-              style={{ border: "none" }}
-            />
+          {pdfUrl ? (
+            <iframe src={pdfUrl} width="100%" height="100%" style={{ border: "none" }} />
+          ) : (
+            <Typography variant="body1" color="error" textAlign="center" p={2}>
+              PDF could not be loaded.
+            </Typography>
           )}
         </Box>
       </Modal>

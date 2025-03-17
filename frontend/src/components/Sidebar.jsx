@@ -16,7 +16,6 @@ import {
   FaUser,
   FaBlog,
   FaSignOutAlt,
-  FaNewspaper,
 } from "react-icons/fa";
 import { MdEventNote, MdLibraryBooks } from "react-icons/md";
 import { motion } from "framer-motion";
@@ -37,7 +36,6 @@ const Sidebar = () => {
     { text: "Collaboration", icon: <FaCogs />, path: "/collab" },
     { text: "Profile", icon: <FaUser />, path: "/profile" },
     { text: "Blog", icon: <FaBlog />, path: "/blog" },
-    // { text: "Paper", icon: <FaNewspaper />, path: "/paper" },
   ];
 
   return (
@@ -47,11 +45,11 @@ const Sidebar = () => {
         flexShrink: 0,
         "& .MuiDrawer-paper": {
           width: 260,
-          background: "linear-gradient(180deg, #0A3D91, #000000)",
+          backgroundColor: "#0D47A1", // Deep Blue Sidebar
           color: "white",
           padding: "20px",
           boxSizing: "border-box",
-          borderRight: "3px solid #0056b3",
+          borderRight: "2px solid #1565C0",
         },
       }}
       variant="permanent"
@@ -69,7 +67,7 @@ const Sidebar = () => {
             fontWeight: "bold",
             letterSpacing: "1px",
             textTransform: "uppercase",
-            background: "linear-gradient(45deg, #FFD700, #FFA500)",
+            background: "linear-gradient(45deg, #FFD700, #FF8C00)",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
           }}
@@ -78,7 +76,7 @@ const Sidebar = () => {
         </Typography>
       </Box>
 
-      <Divider sx={{ backgroundColor: "#1976D2", mb: 2 }} />
+      <Divider sx={{ backgroundColor: "#1565C0", mb: 2 }} />
 
       {/* Menu Items */}
       <List
@@ -99,19 +97,16 @@ const Sidebar = () => {
             }}
           >
             <ListItem
-              button
+              component="div"
               onClick={() => navigate(path)}
-              component={motion.div}
-              whileHover={{ scale: 1.05, backgroundColor: "#003366" }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 300 }}
               sx={{
                 borderRadius: "8px",
                 marginBottom: "10px",
-                background: "linear-gradient(90deg, #001F3F, #003366)",
+                backgroundColor: "#0D47A1",
                 color: "white",
+                cursor: "pointer",
                 "&:hover": {
-                  background: "linear-gradient(90deg, #004080, #0066CC)",
+                  backgroundColor: "#1976D2",
                 },
               }}
             >
@@ -124,23 +119,25 @@ const Sidebar = () => {
         ))}
       </List>
 
-      <Divider sx={{ backgroundColor: "#1976D2", mt: 2, mb: 2 }} />
+      <Divider sx={{ backgroundColor: "#1565C0", mt: 2, mb: 2 }} />
 
       {/* Logout Button */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        whileHover={{ scale: 1.1, rotate: 5, backgroundColor: "#D32F2F" }}
+        whileHover={{ scale: 1.05, rotate: 5 }}
         whileTap={{ scale: 0.9 }}
         transition={{ duration: 0.3 }}
       >
         <ListItem
-          button
+          component="div"
           onClick={handleLogout}
           sx={{
             borderRadius: "8px",
-            background: "linear-gradient(90deg, #660000, #990000)",
-            "&:hover": { background: "linear-gradient(90deg, #990000, #CC0000)" },
+            backgroundColor: "#D32F2F",
+            color: "white",
+            cursor: "pointer",
+            "&:hover": { backgroundColor: "#B71C1C" },
           }}
         >
           <ListItemIcon sx={{ color: "white", minWidth: "40px" }}>
