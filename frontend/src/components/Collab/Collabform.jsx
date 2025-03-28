@@ -62,14 +62,14 @@ const CollabForm = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen text-white bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900">
-      <div className="w-full max-w-2xl p-8 bg-black shadow-md bg-opacity-30 backdrop-blur-md rounded-xl">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+      <Typography variant="h3" className="mb-6 font-bold text-blue-600">
+        Create a Collaboration Form
+      </Typography>
+      <div className="w-full max-w-2xl p-8 bg-white shadow-lg rounded-2xl">
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-          <Typography variant="h4" className="mb-4 font-semibold text-center text-blue-400">
-            Collaboration Form
-          </Typography>
         </motion.div>
-        <Divider className="mb-6 border-gray-700" />
+        <Divider className="mb-6" />
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {["title", "name", "location"].map((field, index) => (
@@ -82,12 +82,7 @@ const CollabForm = () => {
                   onChange={handleChange}
                   name={field}
                   required
-                  className="bg-white rounded-md bg-opacity-10 backdrop-blur-lg"
-                  InputLabelProps={{ className: "text-gray-300" }}
-                  InputProps={{
-                    style: { color: "white" },
-                    className: "text-white",
-                  }}
+                  className="bg-white rounded-md"
                 />
               </motion.div>
             ))}
@@ -103,16 +98,11 @@ const CollabForm = () => {
               onChange={handleChange}
               name="description"
               required
-              className="bg-white rounded-md bg-opacity-10 backdrop-blur-lg"
-              InputLabelProps={{ className: "text-gray-300" }}
-              InputProps={{
-                style: { color: "white" },
-                className: "text-white",
-              }}
+              className="bg-white rounded-md"
             />
           </motion.div>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.6 }} className="mt-4">
-            <Typography variant="subtitle1" className="mb-2 font-semibold text-gray-300">
+            <Typography variant="subtitle1" className="mb-2 font-semibold text-gray-700">
               Skills Required
             </Typography>
             <Select
@@ -123,10 +113,10 @@ const CollabForm = () => {
               placeholder="Select skills..."
               closeMenuOnSelect={false}
               isSearchable
-              className="text-white bg-white rounded-md bg-opacity-10 backdrop-blur-lg"
+              className="rounded-md"
               styles={{
-                control: (base) => ({ ...base, backgroundColor: "rgba(255, 255, 255, 0)", backdropFilter: "blur(10px)" }),
-                menu: (base) => ({ ...base, backgroundColor: "rgba(255, 255, 255, 0.1)", backdropFilter: "blur(10px)" }),
+                control: (base) => ({ ...base, backgroundColor: "white", borderColor: "#ccc", boxShadow: "none" }),
+                menu: (base) => ({ ...base, backgroundColor: "white", borderRadius: "6px" }),
                 multiValue: (base) => ({ ...base, backgroundColor: "#2563eb", color: "white" }),
                 multiValueLabel: (base) => ({ ...base, color: "white" }),
               }}
@@ -139,7 +129,7 @@ const CollabForm = () => {
               </Button>
             </motion.div>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button onClick={() => navigate(-1)} variant="outlined" className="text-blue-400 border-blue-400">
+              <Button onClick={() => navigate(-1)} variant="outlined" className="text-blue-600 border-blue-600">
                 Back
               </Button>
             </motion.div>

@@ -8,7 +8,7 @@ const EventDetails = () => {
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false); // New state for image preview
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -43,40 +43,39 @@ const EventDetails = () => {
   }
 
   return (
-    <div className="bg-black text-white min-h-screen relative">
+    <div className="relative min-h-screen text-white bg-black">
       <EventNav />
-      <div className="max-w-4xl mx-auto p-6">
+      <div className="max-w-4xl p-6 mx-auto">
         <button
           onClick={() => navigate(-1)}
-          className="mb-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-500 transition"
+          className="px-4 py-2 mb-4 text-white transition bg-indigo-600 rounded-lg hover:bg-indigo-500"
         >
           ← Back to Events
         </button>
-        <h1 className="text-3xl font-bold text-indigo-400 mb-4">
+        <h1 className="mb-4 text-3xl font-bold text-indigo-400">
           {event.eventName}
         </h1>
         {event.poster && (
           <>
             <img
-              src={`http://localhost:5000/${event.poster}`}
+              src={`http://localhost:5000/uploads/${event.poster}`}
               alt={event.eventName}
-              onClick={() => setIsPreviewOpen(true)} // Open preview on click
-              className="w-full h-64 object-cover rounded-lg mb-6 cursor-pointer hover:opacity-80 transition"
+              onClick={() => setIsPreviewOpen(true)}
+              className="object-cover w-full mb-6 transition rounded-lg cursor-pointer h-96 hover:opacity-80"
             />
-            {/* Full-Screen Image Preview */}
             {isPreviewOpen && (
               <div
-                className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50"
-                onClick={() => setIsPreviewOpen(false)} // Close preview on click
+                className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90"
+                onClick={() => setIsPreviewOpen(false)}
               >
                 <img
-                  src={`http://localhost:5000/${event.poster}`}
+                  src={`http://localhost:5000/uploads/${event.poster}`}
                   alt={event.eventName}
                   className="max-w-full max-h-full rounded-lg"
                 />
                 <button
                   onClick={() => setIsPreviewOpen(false)}
-                  className="absolute top-4 right-4 text-white text-2xl font-bold"
+                  className="absolute text-2xl font-bold text-white top-4 right-4"
                 >
                   ✖
                 </button>
@@ -93,8 +92,39 @@ const EventDetails = () => {
             <span className="mr-2">📍</span>
             {event.location}
           </p>
-          <p className="italic text-sm text-gray-400">{event.collegeName}</p>
-          <p className="text-gray-300">{event.eventDescription}</p>
+          <p className="text-sm italic text-gray-400">{event.collegeName}</p>
+          <p className="text-gray-300 whitespace-pre-line">
+            {event.eventDescription}
+          </p>
+
+          {event.contactDetails && event.contactDetails.length > 0 && (
+            <div className="mt-6">
+              <h3 className="mb-2 text-xl font-semibold text-indigo-400">
+                Contact Information
+              </h3>
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                {event.contactDetails.map((contact, index) => (
+                  <div key={index} className="p-3 bg-gray-800 rounded-lg">
+                    <p className="font-medium text-gray-400">{contact.type}:</p>
+                    <p className="text-white">{contact.value}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {event.registrationLink && (
+            <div className="mt-6">
+              <a
+                href={event.registrationLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block px-4 py-2 font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-500"
+              >
+                Register for this event
+              </a>
+            </div>
+          )}
         </div>
       </div>
     </div>

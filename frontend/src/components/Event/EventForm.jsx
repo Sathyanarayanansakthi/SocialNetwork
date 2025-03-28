@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom"; // For routing
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify"; // For toast notifications
-import "react-toastify/dist/ReactToastify.css"; // Toast styles
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useDropzone } from "react-dropzone";
 import {
   Button,
@@ -18,7 +18,7 @@ import {
 import { UploadFile, Description, Close, Delete } from "@mui/icons-material";
 
 const EventForm = () => {
-  const navigate = useNavigate(); // Hook for navigation
+  const navigate = useNavigate();
   const [eventName, setEventName] = useState("");
   const [eventType, setEventType] = useState("");
   const [location, setLocation] = useState("");
@@ -29,9 +29,11 @@ const EventForm = () => {
   const [contactType, setContactType] = useState("");
   const [contactValue, setContactValue] = useState("");
   const [contactDetails, setContactDetails] = useState([]);
+  const [registrationLink, setRegistrationLink] = useState("");
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: "image/*",
+    maxFiles: 1,
     onDrop: (acceptedFiles) => {
       const file = acceptedFiles[0];
       setPoster(file);
@@ -56,6 +58,12 @@ const EventForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!eventName || !eventType || !location || !collegeName || !eventDescription) {
+      toast.error("Please fill all required fields");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("eventName", eventName);
     formData.append("eventType", eventType);
@@ -63,28 +71,35 @@ const EventForm = () => {
     formData.append("collegeName", collegeName);
     formData.append("eventDescription", eventDescription);
     if (poster) formData.append("poster", poster);
-    formData.append("contactDetails", JSON.stringify(contactDetails));
+    if (contactDetails.length > 0) {
+      formData.append("contactDetails", JSON.stringify(contactDetails));
+    }
+    if (registrationLink) {
+      formData.append("registrationLink", registrationLink);
+    }
 
     try {
       const response = await axios.post(
         "http://localhost:5000/api/events",
         formData,
         {
-          headers: { "Content-Type": "multipart/form-data" },
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         }
       );
 
-      // Show success toast notification
       toast.success(response.data.message || "Event created successfully!");
-
-      // Redirect to the events page after a short delay
+      
       setTimeout(() => {
-        navigate("/event"); // Navigate to the events page
-      }, 2000); // 2 seconds delay
+        navigate("/events");
+      }, 2000);
     } catch (error) {
-      // Show error toast notification
+      console.error("Error creating event:", error);
       toast.error(
-        error.response?.data?.message || "An error occurred while creating the event."
+        error.response?.data?.message || 
+        error.message || 
+        "An error occurred while creating the event."
       );
     }
   };
@@ -92,9 +107,9 @@ const EventForm = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <Card className="relative w-full max-w-lg p-6 bg-white shadow-lg rounded-2xl">
-        <Button className="absolute top-4 right-4" onClick={() => navigate(-1)}>
+        <IconButton className="absolute top-4 right-4" onClick={() => navigate(-1)}>
           <Close />
-        </Button>
+        </IconButton>
         <CardContent>
           <Typography variant="h5" className="mb-4 text-center">
             Create Event
@@ -137,8 +152,13 @@ const EventForm = () => {
               onChange={(e) => setEventDescription(e.target.value)}
               required
             />
+            <TextField
+              fullWidth
+              label="Registration Link"
+              value={registrationLink}
+              onChange={(e) => setRegistrationLink(e.target.value)}
+            />
 
-            {/* Contact Details */}
             <div className="space-y-2">
               <Select
                 fullWidth
@@ -148,7 +168,7 @@ const EventForm = () => {
               >
                 <MenuItem value="">Select Contact Type</MenuItem>
                 <MenuItem value="email">Email</MenuItem>
-                <MenuItem value="phoneNumber">Phone Number</MenuItem>
+                <MenuItem value="phone">Phone</MenuItem>
                 <MenuItem value="website">Website</MenuItem>
               </Select>
               {contactType && (
@@ -159,7 +179,11 @@ const EventForm = () => {
                   onChange={(e) => setContactValue(e.target.value)}
                 />
               )}
-              <Button variant="outlined" onClick={handleAddContactDetail}>
+              <Button 
+                variant="outlined" 
+                onClick={handleAddContactDetail}
+                disabled={!contactType || !contactValue}
+              >
                 Add Contact
               </Button>
               <div className="flex flex-wrap gap-2 mt-2">
@@ -173,7 +197,6 @@ const EventForm = () => {
               </div>
             </div>
 
-            {/* Poster Upload */}
             <div
               {...getRootProps()}
               className="p-6 text-center border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-100"
@@ -182,9 +205,15 @@ const EventForm = () => {
               {isDragActive ? (
                 <Typography variant="body2">Drop the image here...</Typography>
               ) : (
-                <Typography variant="body2">
-                  Drag & Drop or Click to Upload Poster
-                </Typography>
+                <div className="flex flex-col items-center">
+                  <UploadFile className="mb-2" />
+                  <Typography variant="body2">
+                    Drag & Drop or Click to Upload Poster
+                  </Typography>
+                  <Typography variant="caption" className="mt-1">
+                    (JPEG, PNG, GIF - Max 5MB)
+                  </Typography>
+                </div>
               )}
             </div>
 
@@ -208,15 +237,19 @@ const EventForm = () => {
               </div>
             )}
 
-            <Button type="submit" variant="contained" fullWidth>
+            <Button 
+              type="submit" 
+              variant="contained" 
+              fullWidth
+              className="mt-4"
+            >
               Create Event
             </Button>
           </form>
         </CardContent>
-        {/* Toast Container for Notifications */}
         <ToastContainer
           position="top-right"
-          autoClose={3000} // Auto-close after 3 seconds
+          autoClose={3000}
           hideProgressBar={false}
           newestOnTop={false}
           closeOnClick

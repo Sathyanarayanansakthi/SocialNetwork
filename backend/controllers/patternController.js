@@ -4,7 +4,9 @@ import fs from "fs/promises";
 
 export const uploadPdf = async (req, res) => {
   try {
-    if (!req.file) return res.status(400).json({ error: "No file uploaded." });
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded." });
+    }
 
     const { name, about, submittedDate, guide, patternDetails } = req.body;
 
@@ -23,7 +25,7 @@ export const uploadPdf = async (req, res) => {
 
     const newPattern = new PatternModel({
       filename: req.file.filename,
-      fileUrl: `/uploads/${req.file.filename}`,
+      fileUrl: `/uploads/${req.file.filename}`, // Fixed incorrect syntax
       name,
       about,
       submittedDate,
@@ -34,7 +36,9 @@ export const uploadPdf = async (req, res) => {
     await newPattern.save();
     res.status(201).json({ message: "PDF uploaded successfully!", pattern: newPattern });
   } catch (error) {
-    if (req.file) await fs.unlink(req.file.path);
+    if (req.file) {
+      await fs.unlink(req.file.path);
+    }
     console.error("Upload Error:", error);
     res.status(500).json({ error: "PDF upload failed." });
   }

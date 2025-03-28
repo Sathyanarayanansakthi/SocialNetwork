@@ -1,16 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import {
-  List,
-  ListItem,
-  ListItemText,
-  Collapse,
-  Typography,
-  TextField,
-  Button,
-  Box,
-} from "@mui/material";
-import { ExpandLess, ExpandMore } from "@mui/icons-material";
+import { Box, Typography, TextField, Button, Card, CardContent, Collapse, IconButton } from "@mui/material";
+import { ExpandMore, ExpandLess, ChatBubbleOutline } from "@mui/icons-material";
+import { motion } from "framer-motion";
 
 const ForumCard = () => {
   const [posts, setPosts] = useState([]);
@@ -30,7 +22,6 @@ const ForumCard = () => {
         setLoading(false);
       }
     };
-
     fetchPosts();
   }, []);
 
@@ -49,8 +40,6 @@ const ForumCard = () => {
         text: commentData[postId] || "",
       });
       setCommentData((prev) => ({ ...prev, [postId]: "" }));
-
-      // Refresh posts to show new comments
       const response = await axios.get("http://localhost:5000/api/posts");
       setPosts(response.data);
     } catch (error) {
@@ -62,64 +51,39 @@ const ForumCard = () => {
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="bg-gray-900 text-white min-h-screen">
-      <Box sx={{ maxWidth: 800, margin: "auto", padding: 3 }}>
-        <Typography variant="h4" gutterBottom>
-          Forum Posts
+    <Box className="flex flex-col items-center min-h-screen p-6 text-white bg-gray-900">
+      <Typography variant="h4" gutterBottom className="font-semibold text-center text-indigo-500">
+        Forum Posts
+      </Typography>
+      {posts.length === 0 ? (
+        <Typography variant="h6" color="textSecondary">
+          No posts available.
         </Typography>
-        {posts.length === 0 ? (
-          <Typography variant="h6" color="textSecondary">
-            No posts available.
-          </Typography>
-        ) : (
-          <List>
-            {posts.map((post) => (
-              <div key={post._id}>
-                <ListItem
-                  button
-                  onClick={() => handleExpand(post._id)}
-                  sx={{
-                    backgroundColor: "#222",
-                    borderRadius: 1,
-                    marginBottom: 1,
-                    boxShadow: 2,
-                  }}
-                >
-                  <ListItemText
-                    primary={<Typography variant="h6">{post.title}</Typography>}
-                  />
-                  {expanded === post._id ? <ExpandLess /> : <ExpandMore />}
-                </ListItem>
-                <Collapse in={expanded === post._id} timeout="auto" unmountOnExit>
-                  <Box
-                    sx={{
-                      padding: 2,
-                      backgroundColor: "#333",
-                      borderRadius: 1,
-                      marginBottom: 1,
-                    }}
-                  >
-                    <Typography variant="body1" paragraph>
+      ) : (
+        <Box className="w-full max-w-3xl space-y-4">
+          {posts.map((post) => (
+            <motion.div key={post._id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
+              <Card className="overflow-hidden text-white bg-gray-800 rounded-lg shadow-lg">
+                <CardContent>
+                  <Box className="flex items-center justify-between">
+                    <Typography variant="h6" className="text-blue-400">
+                      {post.title}
+                    </Typography>
+                    <IconButton onClick={() => handleExpand(post._id)} color="inherit">
+                      {expanded === post._id ? <ExpandLess /> : <ExpandMore />}
+                    </IconButton>
+                  </Box>
+                  <Collapse in={expanded === post._id} timeout="auto" unmountOnExit>
+                    <Typography variant="body1" className="mt-2 text-gray-300">
                       {post.content}
                     </Typography>
-
-                    {/* Comments Section */}
-                    <Typography variant="h6" sx={{ marginTop: 2 }}>
+                    <Typography variant="h6" className="mt-4 text-blue-300">
                       Comments
                     </Typography>
                     {post.comments && post.comments.length > 0 ? (
                       post.comments.map((comment) => (
-                        <Box
-                          key={comment._id}
-                          sx={{
-                            padding: 1,
-                            backgroundColor: "#444",
-                            marginBottom: 1,
-                            borderRadius: 1,
-                            boxShadow: 1,
-                          }}
-                        >
-                          <Typography variant="body2">
+                        <Box key={comment._id} className="p-2 my-2 bg-gray-700 rounded-md">
+                          <Typography variant="body2" className="text-gray-100">
                             <strong>{comment.author}</strong>: {comment.text}
                           </Typography>
                         </Box>
@@ -136,25 +100,26 @@ const ForumCard = () => {
                       placeholder="Add a comment..."
                       value={commentData[post._id] || ""}
                       onChange={(e) => handleCommentChange(post._id, e.target.value)}
-                      sx={{ marginTop: 2, backgroundColor: "#555", borderRadius: 1 }}
-                      InputProps={{ sx: { color: "white" } }}
+                      className="mt-2 text-white bg-gray-600 rounded-lg"
+                      InputProps={{ className: "text-white" }}
                     />
                     <Button
                       size="small"
                       variant="contained"
-                      sx={{ marginTop: 1, backgroundColor: "#1976d2" }}
+                      className="mt-2 bg-indigo-600 hover:bg-indigo-700"
+                      startIcon={<ChatBubbleOutline />}
                       onClick={() => submitComment(post._id)}
                     >
                       Submit
                     </Button>
-                  </Box>
-                </Collapse>
-              </div>
-            ))}
-          </List>
-        )}
-      </Box>
-    </div>
+                  </Collapse>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </Box>
+      )}
+    </Box>
   );
 };
 
