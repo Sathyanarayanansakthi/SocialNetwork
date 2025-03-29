@@ -72,7 +72,7 @@ const Sidebar = () => {
             WebkitTextFillColor: "transparent",
           }}
         >
-          Social Network
+          CONNECTIFY
         </Typography>
       </Box>
 

@@ -93,12 +93,12 @@ const LandingPage = () => {
       <footer className="py-8 text-center">
         <div className="flex justify-center mb-4">
           {[FaFacebookF, FaTwitter, FaLinkedinIn, FaInstagram].map((Icon, index) => (
-            <a key={index} href="https://sathya-narayanan-site.vercel.app/" className="mx-3 text-gray-600 hover:text-black">
+            <a key={index} href="https://sathyanarayanan.live" className="mx-3 text-gray-600 hover:text-black">
               <Icon />
             </a>
           ))}
         </div>
-        <p className="text-gray-500">&copy; {new Date().getFullYear()} Our Social Network. All rights reserved.</p>
+        <p className="text-gray-500">&copy; {new Date().getFullYear()} Our Connectify. All rights reserved.</p>
       </footer>
     </div>
   );
