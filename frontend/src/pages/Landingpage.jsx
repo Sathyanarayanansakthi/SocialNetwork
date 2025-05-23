@@ -43,10 +43,10 @@ const LandingPage = () => {
 
       {/* Technology Stack Section */}
       <div className="px-6 py-20 text-center">
-        <h2 className="mb-6 text-3xl font-bold">Technology Stack</h2>
+        <h2 className="mb-6 text-3xl font-bold">Technology Used </h2>
         <div className="grid grid-cols-2 gap-12 text-5xl sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-          {[{ icon: <SiReact className="text-blue-500" />, name: "React" },
-          { icon: <SiExpress className="text-gray-500" />, name: "Express" },
+          {[{ icon: <SiReact className="text-blue-500" />, name: "React JS" },
+          { icon: <SiExpress className="text-gray-500" />, name: "Express JS" },
           { icon: <SiMongodb className="text-green-500" />, name: "MongoDB" },
           { icon: <SiDocker className="text-blue-600" />, name: "Docker" },
           { icon: <SiVite className="text-purple-500" />, name: "Vite" },
